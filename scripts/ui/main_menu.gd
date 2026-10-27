@@ -488,12 +488,11 @@ func _on_continue() -> void:
 	SceneFader.change_scene(GAME_SCENE)
 
 
+## New run: pick a survivor first (the old save is only replaced once the
+## new run actually starts, so backing out keeps it).
 func _on_play() -> void:
 	RunSave.resume_requested = false
-	RunSave.delete()
-	Sound.play(&"weapon_pick")
-	Sound.set_menu_music(false, 0.4)
-	SceneFader.change_scene(GAME_SCENE)
+	SceneFader.change_scene("res://scenes/character_select.tscn")
 
 
 func _on_options() -> void:

@@ -12,7 +12,7 @@ region = Rect2(224, 0, 16, 16)
 script = ExtResource("2_mod")
 stat = 14
 mode = 0
-value = 1
+value = 1.0
 
 [resource]
 script = ExtResource("1_script")
@@ -25,3 +25,4 @@ rarity = 1
 modifiers = Array[ExtResource("2_mod")]([SubResource("mod_1")])
 max_stacks = 3
 min_round = 2
+styles = Array[StringName]([&"gun"])

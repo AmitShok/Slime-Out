@@ -11,14 +11,10 @@ region = Rect2(160, 0, 16, 16)
 [sub_resource type="Resource" id="mod_1"]
 script = ExtResource("2_mod")
 stat = 10
-mode = 1
 value = 0.35
 
 [sub_resource type="Resource" id="mod_2"]
 script = ExtResource("2_mod")
-stat = 0
-mode = 1
-value = 0.1
 
 [resource]
 script = ExtResource("1_script")
@@ -31,3 +27,4 @@ rarity = 1
 modifiers = Array[ExtResource("2_mod")]([SubResource("mod_1"), SubResource("mod_2")])
 max_stacks = 4
 requires_explosive = true
+styles = Array[StringName]([&"gun"])

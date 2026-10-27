@@ -1,0 +1,26 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/character_select.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://scenes/arena/arena_ground.tscn" id="2_ground"]
+[ext_resource type="PackedScene" path="res://scenes/arena/arena_props.tscn" id="3_props"]
+[ext_resource type="Environment" path="res://resources/ui/world_glow.tres" id="4_glow"]
+[ext_resource type="PackedScene" path="res://scenes/ui/crt.tscn" id="5_crt"]
+
+[node name="CharacterSelect" type="Node2D"]
+script = ExtResource("1_script")
+
+[node name="ArenaGround" parent="." instance=ExtResource("2_ground")]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = ExtResource("4_glow")
+
+[node name="World" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="ArenaProps" parent="World" instance=ExtResource("3_props")]
+
+[node name="Camera" type="Camera2D" parent="."]
+unique_name_in_owner = true
+zoom = Vector2(3, 3)
+
+[node name="CRT" parent="." instance=ExtResource("5_crt")]

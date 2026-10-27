@@ -65,7 +65,8 @@ func close() -> void:
 
 func _rebuild() -> void:
 	var player := _stats.get_parent() as Player
-	_level_label.text = "LV %d   -   %d / %d XP" % [_stats.level, floori(_stats.xp), roundi(_stats.xp_needed)]
+	var who := (_stats.character.display_name + "   -   ") if _stats.character else ""
+	_level_label.text = "%sLV %d   -   %d / %d XP" % [who, _stats.level, floori(_stats.xp), roundi(_stats.xp_needed)]
 	var weapon := _stats.weapon
 	_weapon_name.text = weapon.display_name
 	PixelUI.fit_integer(_weapon_icon, weapon.icon, Vector2(240, 72))
@@ -76,6 +77,19 @@ func _rebuild() -> void:
 	var base_dps := weapon.damage * weapon.fire_rate * weapon.projectile_count
 	_add_row(_weapon_grid, "DPS", "%d" % roundi(dps), dps, base_dps)
 	_add_stat(_weapon_grid, "Damage", Stats.Stat.DAMAGE, "%.0f")
+	if weapon.is_melee():
+		_add_stat(_weapon_grid, "Attack speed", Stats.Stat.FIRE_RATE, "%.1f /s")
+		_add_stat(_weapon_grid, "Reach", Stats.Stat.MELEE_RANGE, "%.0f")
+		_add_stat(_weapon_grid, "Swing arc", Stats.Stat.MELEE_ARC, "%.0f deg")
+		_add_stat(_weapon_grid, "Crit chance", Stats.Stat.CRIT_CHANCE, "", false, 100.0, "%.0f%%")
+		_add_stat(_weapon_grid, "Knockback", Stats.Stat.KNOCKBACK, "%.0f")
+	else:
+		_add_gun_rows(weapon)
+
+	_build_survivor()
+
+
+func _add_gun_rows(weapon: WeaponData) -> void:
 	_add_stat(_weapon_grid, "Fire rate", Stats.Stat.FIRE_RATE, "%.1f /s")
 	_add_stat(_weapon_grid, "Projectiles", Stats.Stat.PROJECTILE_COUNT, "%.0f")
 	_add_stat(_weapon_grid, "Magazine", Stats.Stat.MAGAZINE, "%.0f")
@@ -89,6 +103,9 @@ func _rebuild() -> void:
 	if weapon.is_explosive():
 		_add_stat(_weapon_grid, "Blast radius", Stats.Stat.EXPLOSION_RADIUS, "%.0f")
 
+
+func _build_survivor() -> void:
+	var player := _stats.get_parent() as Player
 	_clear(_survivor_grid)
 	var health := "%d / %d" % [ceili(player.current_health), roundi(player.max_health())] if player else "%.0f" % _stats.get_stat(Stats.Stat.MAX_HEALTH)
 	_add_row(_survivor_grid, "Health", health, _stats.get_stat(Stats.Stat.MAX_HEALTH), _stats.base_max_health)
@@ -104,6 +121,12 @@ func _rebuild() -> void:
 	_add_special(Stats.Stat.DRONES, "Combat drones", "%.0f")
 	_add_special(Stats.Stat.THUNDER, "Thunder strikes", "%.0f")
 	_add_special(Stats.Stat.EXTRA_LIFE, "Extra lives", "%.0f")
+	_add_special(Stats.Stat.ARMOR, "Armour", "", 100.0, "%.0f%%")
+	_add_special(Stats.Stat.LIFESTEAL, "Lifesteal", "", 100.0, "%.0f%%")
+	_add_special(Stats.Stat.SLASH_WAVE, "Sword waves", "%.0f")
+	if _stats.get_stat(Stats.Stat.DRONES) > 0.0:
+		_add_row(_survivor_grid, "Drone damage", "x%.2f" % _stats.get_stat(Stats.Stat.DRONE_DAMAGE), 0.0, 0.0)
+		_add_row(_survivor_grid, "Drone fire rate", "x%.2f" % _stats.get_stat(Stats.Stat.DRONE_RATE), 0.0, 0.0)
 	if _stats.get_stat(Stats.Stat.LAST_STAND) > 0.0:
 		var state := "ACTIVE" if _stats.is_last_stand_active() else "below 30% HP"
 		_add_row(_survivor_grid, "Last Stand", state, 0.0, 0.0)

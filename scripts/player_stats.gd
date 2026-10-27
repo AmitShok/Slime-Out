@@ -24,6 +24,8 @@ signal leveled_up(level: int)
 @export var level_xp_growth := 1.22
 
 var weapon: WeaponData
+## The playable character (base stats, trait modifiers). Null = defaults.
+var character: CharacterData
 var level := 1
 var xp := 0.0
 var xp_needed := 6.0
@@ -39,6 +41,16 @@ func _ready() -> void:
 	weapon = starting_weapon
 	xp_needed = first_level_xp
 	_rebuild()
+
+
+## Switches to a character's kit. Call before any upgrades are applied.
+func set_character(value: CharacterData) -> void:
+	character = value
+	if character.starting_weapon:
+		weapon = character.starting_weapon
+		weapon_changed.emit(weapon)
+	_rebuild()
+	changed.emit()
 
 
 func add_xp(amount: float) -> void:
@@ -101,6 +113,10 @@ func get_stat(stat: Stats.Stat, for_weapon: WeaponData = null) -> float:
 			return maxf(0.0, roundf(value))
 		Stats.Stat.CRIT_CHANCE:
 			return clampf(value, 0.0, 1.0)
+		Stats.Stat.ARMOR:
+			return clampf(value, 0.0, Stats.ARMOR_CAP)
+		Stats.Stat.SLASH_WAVE, Stats.Stat.DRONES, Stats.Stat.ORBITALS:
+			return maxf(0.0, roundf(value))
 	return value
 
 
@@ -120,13 +136,17 @@ func base_value(stat: Stats.Stat) -> float:
 func _base_value(stat: Stats.Stat, source: WeaponData) -> float:
 	match stat:
 		Stats.Stat.MOVE_SPEED:
-			return base_move_speed
+			return character.move_speed if character else base_move_speed
 		Stats.Stat.MAX_HEALTH:
-			return base_max_health
+			return character.max_health if character else base_max_health
 		Stats.Stat.DASH_COOLDOWN:
-			return base_dash_cooldown
+			return character.dash_cooldown if character else base_dash_cooldown
 		Stats.Stat.CRIT_CHANCE:
-			return base_crit_chance
+			return character.crit_chance if character else base_crit_chance
+		Stats.Stat.ARMOR:
+			return character.armor if character else 0.0
+		Stats.Stat.DRONE_DAMAGE, Stats.Stat.DRONE_RATE:
+			return 1.0
 		Stats.Stat.PICKUP_RADIUS:
 			return base_pickup_radius
 	return source.get_base(stat) if source else 0.0
@@ -135,6 +155,10 @@ func _base_value(stat: Stats.Stat, source: WeaponData) -> float:
 func _rebuild() -> void:
 	_flat.clear()
 	_percent.clear()
+	if character:
+		for modifier in character.modifiers:
+			var trait_bucket := _flat if modifier.mode == StatModifier.Mode.FLAT else _percent
+			trait_bucket[modifier.stat] = float(trait_bucket.get(modifier.stat, 0.0)) + modifier.value
 	for upgrade in upgrades:
 		for modifier in upgrade.modifiers:
 			var bucket := _flat if modifier.mode == StatModifier.Mode.FLAT else _percent

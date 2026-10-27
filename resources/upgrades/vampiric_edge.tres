@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="UpgradeData" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/floor38/ui/upgrade_icons_2.png" id="1_3oa3o"]
+[ext_resource type="Script" path="res://scripts/data/stat_modifier.gd" id="2_mjs21"]
+[ext_resource type="Script" path="res://scripts/data/upgrade_data.gd" id="3_4tlhr"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3sgbn"]
+atlas = ExtResource("1_3oa3o")
+region = Rect2(80, 0, 16, 16)
+
+[sub_resource type="Resource" id="Resource_w4esh"]
+script = ExtResource("2_mjs21")
+stat = 29
+mode = 0
+value = 0.05
+
+[resource]
+script = ExtResource("3_4tlhr")
+id = &"vampiric_edge"
+title = "Vampiric Edge"
+description = "Heal [color=#a7f070]5%[/color] of melee damage dealt"
+icon = SubResource("AtlasTexture_3sgbn")
+rarity = 1
+modifiers = Array[ExtResource("2_mjs21")]([SubResource("Resource_w4esh")])
+max_stacks = 3
+styles = Array[StringName]([&"melee"])

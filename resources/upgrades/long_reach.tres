@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="UpgradeData" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/floor38/ui/upgrade_icons_2.png" id="1_hieco"]
+[ext_resource type="Script" path="res://scripts/data/stat_modifier.gd" id="2_oxptb"]
+[ext_resource type="Script" path="res://scripts/data/upgrade_data.gd" id="3_yeghv"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mp4vp"]
+atlas = ExtResource("1_hieco")
+region = Rect2(32, 0, 16, 16)
+
+[sub_resource type="Resource" id="Resource_hi8mn"]
+script = ExtResource("2_oxptb")
+stat = 27
+value = 0.18
+
+[resource]
+script = ExtResource("3_yeghv")
+id = &"long_reach"
+title = "Long Reach"
+description = "[color=#a7f070]+18%[/color] melee reach"
+icon = SubResource("AtlasTexture_mp4vp")
+modifiers = Array[ExtResource("2_oxptb")]([SubResource("Resource_hi8mn")])
+max_stacks = 4
+styles = Array[StringName]([&"melee"])

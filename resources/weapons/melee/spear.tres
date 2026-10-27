@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="WeaponData" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/floor38/melee/spear.png" id="1_ynn63"]
+[ext_resource type="Script" path="res://scripts/data/weapon_data.gd" id="2_nqtow"]
+
+[resource]
+script = ExtResource("2_nqtow")
+id = &"spear"
+kind = 1
+display_name = "Spear"
+description = "Long reach in a narrow thrust."
+icon = ExtResource("1_ynn63")
+shoot_sheet = ExtResource("1_ynn63")
+frame_size = Vector2i(29, 5)
+grip = Vector2(6, 2)
+support_grip = Vector2(12, 2)
+muzzle = Vector2(28, 2)
+sprite_scale = 1.0
+screen_shake = 0.04
+fire_sound = &""
+reload_out_sound = &""
+reload_in_sound = &""
+damage = 15.0
+fire_rate = 2.2
+magazine = 0
+spread_degrees = 0.0
+knockback = 90.0
+reach = 46.0
+arc_degrees = 50.0
+slash_tint = Color(1.4, 2, 2.4, 1)

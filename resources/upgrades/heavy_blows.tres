@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="UpgradeData" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/floor38/ui/upgrade_icons_2.png" id="1_kivgp"]
+[ext_resource type="Script" path="res://scripts/data/stat_modifier.gd" id="2_nqsed"]
+[ext_resource type="Script" path="res://scripts/data/upgrade_data.gd" id="3_wnbr6"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gqt3w"]
+atlas = ExtResource("1_kivgp")
+region = Rect2(64, 0, 16, 16)
+
+[sub_resource type="Resource" id="Resource_2fovh"]
+script = ExtResource("2_nqsed")
+stat = 9
+value = 0.6
+
+[sub_resource type="Resource" id="Resource_6mbmg"]
+script = ExtResource("2_nqsed")
+value = 0.06
+
+[resource]
+script = ExtResource("3_wnbr6")
+id = &"heavy_blows"
+title = "Heavy Blows"
+description = "[color=#a7f070]+60%[/color] knockback
+[color=#a7f070]+6%[/color] damage"
+icon = SubResource("AtlasTexture_gqt3w")
+modifiers = Array[ExtResource("2_nqsed")]([SubResource("Resource_2fovh"), SubResource("Resource_6mbmg")])
+max_stacks = 3
+styles = Array[StringName]([&"melee"])

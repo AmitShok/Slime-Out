@@ -1,0 +1,33 @@
+[gd_resource type="Resource" script_class="WeaponData" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/floor38/melee/war_hammer.png" id="1_2ejfe"]
+[ext_resource type="Script" path="res://scripts/data/weapon_data.gd" id="2_7ujyw"]
+
+[resource]
+script = ExtResource("2_7ujyw")
+id = &"war_hammer"
+kind = 1
+display_name = "War Hammer"
+description = "Crushing blows release a shockwave."
+icon = ExtResource("1_2ejfe")
+shoot_sheet = ExtResource("1_2ejfe")
+frame_size = Vector2i(20, 9)
+grip = Vector2(3, 4)
+support_grip = Vector2(8, 4)
+muzzle = Vector2(19, 4)
+sprite_scale = 1.0
+screen_shake = 0.1
+fire_sound = &""
+reload_out_sound = &""
+reload_in_sound = &""
+damage = 42.0
+fire_rate = 0.9
+magazine = 0
+spread_degrees = 0.0
+knockback = 260.0
+reach = 30.0
+arc_degrees = 110.0
+swing_shockwave = 0.5
+slash_tint = Color(2, 1.8, 1.2, 1)
+swing_sound = &"swing_heavy"
+min_round = 5

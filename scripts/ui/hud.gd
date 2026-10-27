@@ -110,6 +110,12 @@ func _on_health_changed(current: float, maximum: float) -> void:
 
 
 func _on_ammo_changed(current: int, maximum: int) -> void:
+	var bullet_icon: Control = $Root/WeaponPanel/HBox/Info/AmmoRow/BulletIcon
+	bullet_icon.visible = maximum > 0
+	if maximum <= 0:
+		_ammo_label.text = "MELEE"
+		_ammo_label.modulate = Color.WHITE
+		return
 	_ammo_label.text = "%d / %d" % [current, maximum]
 	_ammo_label.modulate = Color("ef7d57") if current == 0 else Color.WHITE
 

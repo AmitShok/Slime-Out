@@ -41,6 +41,20 @@ enum Stat {
 	DRONES,
 	## Enemies struck per sky-lightning volley.
 	THUNDER,
+	## Fraction of incoming damage ignored (capped at ARMOR_CAP).
+	ARMOR,
+	## Melee reach in px (base from the melee weapon).
+	MELEE_RANGE,
+	## Melee swing cone in degrees (base from the melee weapon).
+	MELEE_ARC,
+	## Fraction of melee damage returned as health.
+	LIFESTEAL,
+	## Flying slashes released per melee swing.
+	SLASH_WAVE,
+	## Multiplier on combat drone damage (base 1).
+	DRONE_DAMAGE,
+	## Multiplier on combat drone fire rate (base 1).
+	DRONE_RATE,
 }
 
 ## Last Stand: active below this health fraction, multiplies these stats.
@@ -54,3 +68,4 @@ const CHAIN_DAMAGE := 0.5
 const REDUCIBLE: Array[Stat] = [Stat.RELOAD_TIME, Stat.SPREAD, Stat.DASH_COOLDOWN]
 const REDUCTION_FLOOR := 0.25
 const CRIT_MULTIPLIER := 2.0
+const ARMOR_CAP := 0.6

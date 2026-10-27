@@ -3,7 +3,10 @@ extends Resource
 ## Static definition of a weapon: visuals + base stats.
 ## Upgrades never modify this resource; PlayerStats layers them on top.
 
+enum Kind { GUN, MELEE }
+
 @export var id: StringName
+@export var kind := Kind.GUN
 @export var display_name := ""
 @export_multiline var description := ""
 ## Shown on upgrade cards and the HUD.
@@ -57,6 +60,17 @@ extends Resource
 @export var explosion_radius := 0.0
 @export var max_range := 400.0
 
+@export_group("Melee")
+## Melee only: reach (px) and swing cone (degrees) before upgrades.
+@export var reach := 0.0
+@export var arc_degrees := 0.0
+## Melee only: shockwave damage (fraction of hit damage) at the blade tip.
+@export var swing_shockwave := 0.0
+## Tint of the slash arc (values > 1 bloom).
+@export var slash_tint := Color(1.6, 1.8, 2.0)
+## Sound ids for the swing.
+@export var swing_sound: StringName = &"swing_light"
+
 @export_group("Unlock")
 ## Earliest round this weapon can be offered.
 @export var min_round := 2
@@ -84,8 +98,16 @@ func get_base(stat: Stats.Stat) -> float:
 			return knockback
 		Stats.Stat.EXPLOSION_RADIUS:
 			return explosion_radius
+		Stats.Stat.MELEE_RANGE:
+			return reach
+		Stats.Stat.MELEE_ARC:
+			return arc_degrees
 	return 0.0
 
 
 func is_explosive() -> bool:
 	return explosion_radius > 0.0
+
+
+func is_melee() -> bool:
+	return kind == Kind.MELEE

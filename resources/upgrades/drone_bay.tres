@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="UpgradeData" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/floor38/ui/upgrade_icons_2.png" id="1_el3vi"]
+[ext_resource type="Script" path="res://scripts/data/stat_modifier.gd" id="2_gul0g"]
+[ext_resource type="Script" path="res://scripts/data/upgrade_data.gd" id="3_jcgf7"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_74vvx"]
+atlas = ExtResource("1_el3vi")
+region = Rect2(176, 0, 16, 16)
+
+[sub_resource type="Resource" id="Resource_67k2r"]
+script = ExtResource("2_gul0g")
+stat = 24
+mode = 0
+value = 1.0
+
+[resource]
+script = ExtResource("3_jcgf7")
+id = &"drone_bay"
+title = "Drone Bay"
+description = "[color=#a7f070]+1[/color] combat drone"
+icon = SubResource("AtlasTexture_74vvx")
+rarity = 2
+modifiers = Array[ExtResource("2_gul0g")]([SubResource("Resource_67k2r")])
+max_stacks = 4
+styles = Array[StringName]([&"engineer"])

@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="UpgradeData" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/floor38/ui/upgrade_icons_2.png" id="1_ceuif"]
+[ext_resource type="Script" path="res://scripts/data/stat_modifier.gd" id="2_l1ybo"]
+[ext_resource type="Script" path="res://scripts/data/upgrade_data.gd" id="3_jscnm"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vidvi"]
+atlas = ExtResource("1_ceuif")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="Resource" id="Resource_pndxe"]
+script = ExtResource("2_l1ybo")
+value = 0.22
+
+[resource]
+script = ExtResource("3_jscnm")
+id = &"whetstone"
+title = "Whetstone"
+description = "[color=#a7f070]+22%[/color] melee damage"
+icon = SubResource("AtlasTexture_vidvi")
+modifiers = Array[ExtResource("2_l1ybo")]([SubResource("Resource_pndxe")])
+styles = Array[StringName]([&"melee"])

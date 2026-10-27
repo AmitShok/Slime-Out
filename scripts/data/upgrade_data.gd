@@ -20,6 +20,9 @@ enum Rarity { COMMON, RARE, EPIC, WEAPON }
 @export var min_round := 1
 ## Only offered while holding an explosive weapon.
 @export var requires_explosive := false
+## Who may be offered this card: character styles (&"gun", &"melee") or
+## character ids (&"engineer"). Empty = everyone.
+@export var styles: Array[StringName] = []
 
 var weapon: WeaponData
 

@@ -109,11 +109,11 @@ func _update_drones(delta: float) -> void:
 		var target := _nearest_enemy(drone.global_position, DRONE_RANGE)
 		if target == null:
 			continue
-		_drone_timers[i] = DRONE_INTERVAL
+		_drone_timers[i] = DRONE_INTERVAL / maxf(0.2, _stats.get_stat(Stats.Stat.DRONE_RATE))
 		var angle := (target.global_position + Vector2(0, -4) - drone.global_position).angle()
 		var projectile: Projectile = PROJECTILE.instantiate()
 		projectile.setup({
-			"angle": angle, "speed": 380.0, "damage": DRONE_DAMAGE * _stats.damage_multiplier(),
+			"angle": angle, "speed": 380.0, "damage": DRONE_DAMAGE * _stats.damage_multiplier() * _stats.get_stat(Stats.Stat.DRONE_DAMAGE),
 			"crit": false, "pierce": 0, "knockback": 40.0, "explosion_radius": 0.0,
 			"range": DRONE_RANGE + 40.0, "texture": DRONE_BULLET, "texture_scale": 1.0, "tint": Fx.GLOW_COOL,
 		})

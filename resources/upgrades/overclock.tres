@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="UpgradeData" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/floor38/ui/upgrade_icons_2.png" id="1_h1pgy"]
+[ext_resource type="Script" path="res://scripts/data/stat_modifier.gd" id="2_uhxe6"]
+[ext_resource type="Script" path="res://scripts/data/upgrade_data.gd" id="3_jc8af"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mlgwl"]
+atlas = ExtResource("1_h1pgy")
+region = Rect2(144, 0, 16, 16)
+
+[sub_resource type="Resource" id="Resource_1u8ps"]
+script = ExtResource("2_uhxe6")
+stat = 32
+value = 0.3
+
+[resource]
+script = ExtResource("3_jc8af")
+id = &"overclock"
+title = "Overclock"
+description = "Drones fire [color=#a7f070]30%[/color] faster"
+icon = SubResource("AtlasTexture_mlgwl")
+rarity = 1
+modifiers = Array[ExtResource("2_uhxe6")]([SubResource("Resource_1u8ps")])
+max_stacks = 4
+styles = Array[StringName]([&"engineer"])

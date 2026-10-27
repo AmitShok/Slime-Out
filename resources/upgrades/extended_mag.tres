@@ -11,7 +11,6 @@ region = Rect2(32, 0, 16, 16)
 [sub_resource type="Resource" id="mod_1"]
 script = ExtResource("2_mod")
 stat = 2
-mode = 1
 value = 0.35
 
 [resource]
@@ -20,5 +19,5 @@ id = &"extended_mag"
 title = "Extended Mag"
 description = "[color=#a7f070]+35%[/color] magazine size"
 icon = SubResource("icon")
-rarity = 0
 modifiers = Array[ExtResource("2_mod")]([SubResource("mod_1")])
+styles = Array[StringName]([&"gun"])

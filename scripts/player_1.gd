@@ -36,6 +36,10 @@ var _dash_cooldown_left := 0.0
 var _dash_direction := Vector2.ZERO
 var _dash_grace_left := 0.0
 var _dodged_this_dash := false
+## Slimes already hit by this dash (charging dash trait).
+var _dash_hits := {}
+## Cosmetic look (CharacterLooks slot indices) - saved with the run.
+var look := {}
 var _invulnerable_left := 0.0
 var _hurt_tween: Tween
 var _facing: StringName = &"down"
@@ -64,6 +68,18 @@ func _ready() -> void:
 	($AutoWeapons as AutoWeapons).setup(stats)
 	stats.changed.connect(_on_stats_changed)
 	Events.enemy_killed.connect(_on_enemy_killed)
+
+
+## Puts this player in a character's body, kit and colours.
+func set_character(character: CharacterData, character_look: Dictionary) -> void:
+	look = character_look.duplicate()
+	stats.set_character(character)
+	var sheet := CharacterLooks.recolor(character.body_sheet, character.id, look)
+	animated_sprite.sprite_frames = _frames_for(sheet)
+	animated_sprite.play(&"idle_down")
+	weapon.set_hand_texture(CharacterLooks.recolor(character.hand_texture, character.id, look))
+	current_health = max_health()
+	_on_health_changed()
 
 
 func max_health() -> float:
@@ -106,6 +122,7 @@ func _tick_timers(delta: float) -> void:
 	if _dash_left > 0.0:
 		_dash_left -= delta
 		_check_dash_through()
+		_dash_strike()
 		_ghost_timer -= delta
 		if _ghost_timer <= 0.0:
 			_ghost_timer = GHOST_INTERVAL
@@ -136,6 +153,7 @@ func _start_dash(direction: Vector2) -> void:
 	Sound.play(&"dash", global_position)
 	_dash_grace_left = 0.0
 	_dodged_this_dash = false
+	_dash_hits.clear()
 	_set_immune_glow(true)
 
 
@@ -157,6 +175,21 @@ func _check_dash_through() -> void:
 		if enemy.global_position.distance_squared_to(global_position) < 144.0:
 			_show_dodge()
 			return
+
+
+## Knight trait: the dash is a shoulder charge that hurts what it passes.
+func _dash_strike() -> void:
+	var character := stats.character
+	if character == null or character.dash_damage <= 0.0:
+		return
+	for node in get_tree().get_nodes_in_group(&"enemies"):
+		var enemy := node as Enemy
+		if _dash_hits.has(enemy) or not enemy.can_be_hit():
+			continue
+		if enemy.global_position.distance_to(global_position) <= 12.0 + enemy.hit_radius():
+			_dash_hits[enemy] = true
+			enemy.take_damage(character.dash_damage * stats.damage_multiplier(), _dash_direction * 220.0)
+			Events.screen_shake.emit(0.08)
 
 
 ## Cool HDR tint (blooms) while the dash i-frames are active.
@@ -211,6 +244,7 @@ func take_damage(amount: float) -> void:
 	if is_dash_immune():
 		_show_dodge()
 		return
+	amount *= 1.0 - stats.get_stat(Stats.Stat.ARMOR)
 	current_health = maxf(0.0, current_health - amount)
 	_invulnerable_left = hurt_invulnerability
 	_on_health_changed()

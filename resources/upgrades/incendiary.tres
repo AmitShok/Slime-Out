@@ -25,3 +25,4 @@ rarity = 1
 modifiers = Array[ExtResource("2_mod")]([SubResource("mod_1")])
 max_stacks = 3
 min_round = 2
+styles = Array[StringName]([&"gun"])

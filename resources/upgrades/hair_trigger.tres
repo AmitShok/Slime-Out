@@ -11,7 +11,6 @@ region = Rect2(16, 0, 16, 16)
 [sub_resource type="Resource" id="mod_1"]
 script = ExtResource("2_mod")
 stat = 1
-mode = 1
 value = 0.18
 
 [resource]
@@ -20,5 +19,5 @@ id = &"hair_trigger"
 title = "Hair Trigger"
 description = "[color=#a7f070]+18%[/color] fire rate"
 icon = SubResource("icon")
-rarity = 0
 modifiers = Array[ExtResource("2_mod")]([SubResource("mod_1")])
+styles = Array[StringName]([&"gun"])

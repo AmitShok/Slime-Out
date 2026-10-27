@@ -53,7 +53,10 @@ static func summary() -> String:
 	var weapon := load(str(data.stats.weapon)) as WeaponData
 	if weapon:
 		weapon_name = weapon.display_name
-	return "Round %d   -   LV %d   -   %s" % [int(data.round), int(data.stats.level), weapon_name]
+	var who := ""
+	if data.has("character"):
+		who = Profile.by_id(StringName(data.character)).display_name + "   -   "
+	return "%sRound %d   -   LV %d   -   %s" % [who, int(data.round), int(data.stats.level), weapon_name]
 
 
 static func vec(value: Vector2) -> Array:

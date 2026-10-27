@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="CharacterData" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/floor38/player/knight.png" id="1_bsgk7"]
+[ext_resource type="Texture2D" path="res://assets/floor38/player/hand_knight.png" id="2_aiy02"]
+[ext_resource type="Script" path="res://scripts/data/stat_modifier.gd" id="3_0cnfx"]
+[ext_resource type="Script" path="res://scripts/data/character_data.gd" id="4_xxla0"]
+[ext_resource type="Resource" path="res://resources/weapons/melee/sword.tres" id="5_5qve6"]
+[ext_resource type="Script" path="res://scripts/data/weapon_data.gd" id="6_so1uv"]
+[ext_resource type="Resource" path="res://resources/weapons/melee/spear.tres" id="7_h0v0n"]
+[ext_resource type="Resource" path="res://resources/weapons/melee/battle_axe.tres" id="8_3vdcn"]
+[ext_resource type="Resource" path="res://resources/weapons/melee/war_hammer.tres" id="9_lag8f"]
+
+[resource]
+script = ExtResource("4_xxla0")
+id = &"knight"
+display_name = "Knight"
+role = "MELEE"
+description = "Steel, plume and stubbornness. Wades into the horde and cleaves it apart up close."
+traits = PackedStringArray("Armour: takes 20% less damage", "Dash is a shoulder charge (30 dmg)", "Swings parry spitter acid", "Melee weapons and upgrades only")
+body_sheet = ExtResource("1_bsgk7")
+hand_texture = ExtResource("2_aiy02")
+style = &"melee"
+starting_weapon = ExtResource("5_5qve6")
+weapons = Array[ExtResource("6_so1uv")]([ExtResource("5_5qve6"), ExtResource("7_h0v0n"), ExtResource("8_3vdcn"), ExtResource("9_lag8f")])
+max_health = 130.0
+move_speed = 108.0
+dash_cooldown = 0.9
+armor = 0.2
+dash_damage = 30.0
+parries_projectiles = true
+bar_health = 0.85
+bar_speed = 0.4
+bar_damage = 0.8
+bar_range = 0.25

@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="UpgradeData" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/floor38/ui/upgrade_icons_2.png" id="1_xthjg"]
+[ext_resource type="Script" path="res://scripts/data/stat_modifier.gd" id="2_tr665"]
+[ext_resource type="Script" path="res://scripts/data/upgrade_data.gd" id="3_4kg4t"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_28i4y"]
+atlas = ExtResource("1_xthjg")
+region = Rect2(128, 0, 16, 16)
+
+[sub_resource type="Resource" id="Resource_4e85h"]
+script = ExtResource("2_tr665")
+stat = 30
+mode = 0
+value = 1.0
+
+[resource]
+script = ExtResource("3_4kg4t")
+id = &"sword_wave"
+title = "Sword Wave"
+description = "Every swing releases [color=#a7f070]+1[/color] flying slash"
+icon = SubResource("AtlasTexture_28i4y")
+rarity = 2
+modifiers = Array[ExtResource("2_tr665")]([SubResource("Resource_4e85h")])
+max_stacks = 3
+styles = Array[StringName]([&"melee"])

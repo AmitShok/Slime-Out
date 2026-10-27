@@ -11,7 +11,6 @@ region = Rect2(48, 0, 16, 16)
 [sub_resource type="Resource" id="mod_1"]
 script = ExtResource("2_mod")
 stat = 3
-mode = 1
 value = -0.2
 
 [resource]
@@ -20,5 +19,5 @@ id = &"speed_loader"
 title = "Speed Loader"
 description = "[color=#a7f070]-20%[/color] reload time"
 icon = SubResource("icon")
-rarity = 0
 modifiers = Array[ExtResource("2_mod")]([SubResource("mod_1")])
+styles = Array[StringName]([&"gun"])

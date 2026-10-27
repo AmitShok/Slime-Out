@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="CharacterData" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/floor38/player/hero.png" id="1_by5m1"]
+[ext_resource type="Texture2D" path="res://assets/floor38/player/hand.png" id="2_yyc4h"]
+[ext_resource type="Script" path="res://scripts/data/stat_modifier.gd" id="3_s4a80"]
+[ext_resource type="Script" path="res://scripts/data/character_data.gd" id="4_7fsee"]
+[ext_resource type="Resource" path="res://resources/weapons/glock.tres" id="5_pj5jh"]
+[ext_resource type="Script" path="res://scripts/data/weapon_data.gd" id="6_hyvtw"]
+[ext_resource type="Resource" path="res://resources/weapons/revolver.tres" id="7_84v4h"]
+[ext_resource type="Resource" path="res://resources/weapons/mp5.tres" id="8_oeew4"]
+[ext_resource type="Resource" path="res://resources/weapons/ak47.tres" id="9_fsjmi"]
+[ext_resource type="Resource" path="res://resources/weapons/bazooka.tres" id="10_wfuix"]
+[ext_resource type="Resource" path="res://resources/weapons/heavy_bazooka.tres" id="11_d2060"]
+
+[sub_resource type="Resource" id="Resource_oja32"]
+script = ExtResource("3_s4a80")
+stat = 3
+value = -0.15
+
+[resource]
+script = ExtResource("4_7fsee")
+id = &"gunner"
+display_name = "Gunner"
+role = "GUNS"
+description = "A scrappy survivor with a pistol and a plan. Every gun in the armory answers to her."
+traits = PackedStringArray("+5% crit chance", "Reloads 15% faster", "Can find all 6 guns")
+body_sheet = ExtResource("1_by5m1")
+hand_texture = ExtResource("2_yyc4h")
+starting_weapon = ExtResource("5_pj5jh")
+weapons = Array[ExtResource("6_hyvtw")]([ExtResource("5_pj5jh"), ExtResource("7_84v4h"), ExtResource("8_oeew4"), ExtResource("9_fsjmi"), ExtResource("10_wfuix"), ExtResource("11_d2060")])
+crit_chance = 0.1
+modifiers = Array[ExtResource("3_s4a80")]([SubResource("Resource_oja32")])
+bar_speed = 0.6
+bar_damage = 0.6
+bar_range = 0.9

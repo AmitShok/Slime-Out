@@ -62,6 +62,12 @@ func _weapon_stats(weapon: WeaponData, stats: PlayerStats) -> String:
 	var old_dps := stats.get_stat(Stats.Stat.DAMAGE) * stats.get_stat(Stats.Stat.FIRE_RATE) * stats.get_stat(Stats.Stat.PROJECTILE_COUNT)
 	var delta := new_dps - old_dps
 	var delta_text := "[color=%s]%+d[/color]" % [UP_COLOR if delta >= 0.0 else DOWN_COLOR, roundi(delta)]
+	if weapon.is_melee():
+		return "\n".join(PackedStringArray([
+			"[color=%s]DPS[/color] %d (%s)" % [STAT_COLOR, roundi(new_dps), delta_text],
+			"[color=%s]DMG[/color] %d   [color=%s]SPEED[/color] %.1f/s" % [STAT_COLOR, roundi(damage), STAT_COLOR, rate],
+			"[color=%s]REACH[/color] %d   [color=%s]ARC[/color] %d" % [STAT_COLOR, roundi(stats.get_stat(Stats.Stat.MELEE_RANGE, weapon)), STAT_COLOR, roundi(stats.get_stat(Stats.Stat.MELEE_ARC, weapon))],
+		]))
 	var lines := PackedStringArray([
 		"[color=%s]DPS[/color] %d (%s)" % [STAT_COLOR, roundi(new_dps), delta_text],
 		"[color=%s]DMG[/color] %d   [color=%s]RATE[/color] %.1f/s" % [STAT_COLOR, roundi(damage), STAT_COLOR, rate],

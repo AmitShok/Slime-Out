@@ -11,14 +11,11 @@ region = Rect2(208, 0, 16, 16)
 [sub_resource type="Resource" id="mod_1"]
 script = ExtResource("2_mod")
 stat = 7
-mode = 1
 value = -0.4
 
 [sub_resource type="Resource" id="mod_2"]
 script = ExtResource("2_mod")
 stat = 4
-mode = 1
-value = 0.1
 
 [resource]
 script = ExtResource("1_script")
@@ -27,6 +24,6 @@ title = "Steady Aim"
 description = "[color=#a7f070]-40%[/color] bullet spread
 [color=#a7f070]+10%[/color] projectile speed"
 icon = SubResource("icon")
-rarity = 0
 modifiers = Array[ExtResource("2_mod")]([SubResource("mod_1"), SubResource("mod_2")])
 max_stacks = 3
+styles = Array[StringName]([&"gun"])

@@ -50,7 +50,7 @@ func _process(delta: float) -> void:
 	if _player == null:
 		_player = get_tree().get_first_node_in_group(&"player") as Player
 		if _player:
-			_player.weapon.ammo_changed.connect(_on_ammo_changed)
+			_player.weapon.attacked.connect(_on_attacked)
 
 	_view.menu_mode = get_tree().paused or _player == null or _player.is_dead
 	_set_menu_cursor(_view.menu_mode)
@@ -70,7 +70,7 @@ func _process(delta: float) -> void:
 	var weapon := _player.weapon
 	_view.reload_progress = weapon.reload_progress() if weapon.is_reloading() else -1.0
 	var color: Color = Settings.value(&"crosshair_color")
-	if weapon.ammo == 0 and not weapon.is_reloading():
+	if weapon.max_ammo() > 0 and weapon.ammo == 0 and not weapon.is_reloading():
 		color = COLOR_EMPTY
 	elif Settings.value(&"crosshair_react") and _over_enemy():
 		color = Settings.value(&"crosshair_target_color")
@@ -87,12 +87,10 @@ func _over_enemy() -> bool:
 	return false
 
 
-func _on_ammo_changed(current: int, _maximum: int) -> void:
-	if _last_ammo >= 0 and current < _last_ammo:
-		_recoil = minf(max_recoil, _recoil + recoil_per_shot)
-		_recoil_velocity = 0.0
-		_pulse_left = 0.06
-	_last_ammo = current
+func _on_attacked() -> void:
+	_recoil = minf(max_recoil, _recoil + recoil_per_shot)
+	_recoil_velocity = 0.0
+	_pulse_left = 0.06
 
 
 ## Menus use the real (hardware) cursor so it always draws on top of

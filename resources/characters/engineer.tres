@@ -1,0 +1,46 @@
+[gd_resource type="Resource" script_class="CharacterData" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/floor38/player/engineer.png" id="1_dab0o"]
+[ext_resource type="Texture2D" path="res://assets/floor38/player/hand_engineer.png" id="2_l7u3w"]
+[ext_resource type="Script" path="res://scripts/data/stat_modifier.gd" id="3_7olom"]
+[ext_resource type="Script" path="res://scripts/data/character_data.gd" id="4_tdpxw"]
+[ext_resource type="Resource" path="res://resources/weapons/glock.tres" id="5_ip1f6"]
+[ext_resource type="Script" path="res://scripts/data/weapon_data.gd" id="6_4aefo"]
+[ext_resource type="Resource" path="res://resources/weapons/revolver.tres" id="7_b28t6"]
+[ext_resource type="Resource" path="res://resources/weapons/mp5.tres" id="8_bvibh"]
+[ext_resource type="Resource" path="res://resources/weapons/ak47.tres" id="9_53c7n"]
+[ext_resource type="Resource" path="res://resources/weapons/bazooka.tres" id="10_k36o4"]
+[ext_resource type="Resource" path="res://resources/weapons/heavy_bazooka.tres" id="11_xtc4s"]
+
+[sub_resource type="Resource" id="Resource_6kofg"]
+script = ExtResource("3_7olom")
+stat = 24
+mode = 0
+value = 2.0
+
+[sub_resource type="Resource" id="Resource_okvwo"]
+script = ExtResource("3_7olom")
+stat = 31
+value = 0.2
+
+[sub_resource type="Resource" id="Resource_byrsr"]
+script = ExtResource("3_7olom")
+value = -0.15
+
+[resource]
+script = ExtResource("4_tdpxw")
+id = &"engineer"
+display_name = "Engineer"
+role = "DRONES"
+description = "Builds the help he needs. Lets his combat drones do the heavy lifting."
+traits = PackedStringArray("Starts with 2 combat drones", "Drones hit 20% harder", "Gun damage -15%", "Exclusive drone upgrades")
+body_sheet = ExtResource("1_dab0o")
+hand_texture = ExtResource("2_l7u3w")
+starting_weapon = ExtResource("5_ip1f6")
+weapons = Array[ExtResource("6_4aefo")]([ExtResource("5_ip1f6"), ExtResource("7_b28t6"), ExtResource("8_bvibh"), ExtResource("9_53c7n"), ExtResource("10_k36o4"), ExtResource("11_xtc4s")])
+max_health = 90.0
+move_speed = 118.0
+modifiers = Array[ExtResource("3_7olom")]([SubResource("Resource_6kofg"), SubResource("Resource_okvwo"), SubResource("Resource_byrsr")])
+bar_health = 0.4
+bar_speed = 0.65
+bar_range = 0.8

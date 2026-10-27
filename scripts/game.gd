@@ -19,6 +19,7 @@ var current_round := 0
 var kills := 0
 
 var _pool: UpgradePool
+var character: CharacterData
 var _pending_levels := 0
 var _round_end_pending := false
 var _next_round_after_choices := false
@@ -40,9 +41,10 @@ var _autosave_left := AUTOSAVE_INTERVAL
 
 
 func _ready() -> void:
-	_pool = UpgradePool.new(upgrades, weapons)
 	Sound.set_menu_music(false)
 	hud.bind(player, wave_manager)
+	var resume_data := RunSave.load_data() if RunSave.resume_requested else {}
+	_setup_character(resume_data)
 	build_panel.bind(player.stats)
 	pause_menu.build_requested.connect(build_panel.open)
 	pause_menu.options_requested.connect(options_menu.open)
@@ -55,12 +57,36 @@ func _ready() -> void:
 	add_to_group(&"run_saver")
 	if RunSave.resume_requested:
 		RunSave.resume_requested = false
-		var data := RunSave.load_data()
-		if not data.is_empty():
-			_restore.call_deferred(data)
+		if not resume_data.is_empty():
+			_restore.call_deferred(resume_data)
 			return
 	RunSave.delete()
 	_start_round(1)
+
+
+## Picks the character (saved run > select screen > last used) and builds
+## its upgrade/weapon pool.
+func _setup_character(resume_data: Dictionary) -> void:
+	var look := {}
+	if not resume_data.is_empty() and resume_data.has("character"):
+		character = Profile.by_id(StringName(resume_data.character))
+		look = resume_data.get("look", {})
+	elif Profile.selected:
+		character = Profile.selected
+		look = Profile.selected_look
+	else:
+		character = Profile.by_id(Profile.last_character_id())
+		look = Profile.look_for(character.id)
+	if look.is_empty():
+		look = CharacterLooks.default_look(character.id)
+	player.set_character(character, look)
+	var pool_upgrades: Array[UpgradeData] = []
+	for upgrade in upgrades:
+		if character.can_take(upgrade):
+			pool_upgrades.append(upgrade)
+	var pool_weapons: Array[WeaponData] = []
+	pool_weapons.assign(character.weapons if not character.weapons.is_empty() else weapons)
+	_pool = UpgradePool.new(pool_upgrades, pool_weapons)
 
 
 func _start_round(number: int) -> void:
@@ -212,6 +238,8 @@ func _snapshot() -> Dictionary:
 	# Picks the player hasn't made yet, including the screen open right now.
 	var pending := _pending_levels + (1 if _open_choice == "level" else 0)
 	return {
+		"character": String(character.id),
+		"look": player.look,
 		"round": current_round,
 		"phase": _phase,
 		"kills": kills,

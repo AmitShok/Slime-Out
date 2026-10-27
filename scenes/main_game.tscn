@@ -49,6 +49,18 @@
 [ext_resource type="Resource" path="res://resources/upgrades/combat_drone.tres" id="upgrade_combat_drone"]
 [ext_resource type="Resource" path="res://resources/upgrades/thunder_rod.tres" id="upgrade_thunder_rod"]
 [ext_resource type="Resource" path="res://resources/upgrades/magnet.tres" id="upgrade_magnet"]
+[ext_resource type="Resource" path="res://resources/upgrades/whetstone.tres" id="upgrade_whetstone"]
+[ext_resource type="Resource" path="res://resources/upgrades/swift_strikes.tres" id="upgrade_swift_strikes"]
+[ext_resource type="Resource" path="res://resources/upgrades/long_reach.tres" id="upgrade_long_reach"]
+[ext_resource type="Resource" path="res://resources/upgrades/wide_arc.tres" id="upgrade_wide_arc"]
+[ext_resource type="Resource" path="res://resources/upgrades/heavy_blows.tres" id="upgrade_heavy_blows"]
+[ext_resource type="Resource" path="res://resources/upgrades/vampiric_edge.tres" id="upgrade_vampiric_edge"]
+[ext_resource type="Resource" path="res://resources/upgrades/flame_edge.tres" id="upgrade_flame_edge"]
+[ext_resource type="Resource" path="res://resources/upgrades/iron_skin.tres" id="upgrade_iron_skin"]
+[ext_resource type="Resource" path="res://resources/upgrades/sword_wave.tres" id="upgrade_sword_wave"]
+[ext_resource type="Resource" path="res://resources/upgrades/overclock.tres" id="upgrade_overclock"]
+[ext_resource type="Resource" path="res://resources/upgrades/heavy_payload.tres" id="upgrade_heavy_payload"]
+[ext_resource type="Resource" path="res://resources/upgrades/drone_bay.tres" id="upgrade_drone_bay"]
 [ext_resource type="Resource" path="res://resources/weapons/glock.tres" id="weapon_glock"]
 [ext_resource type="Resource" path="res://resources/weapons/revolver.tres" id="weapon_revolver"]
 [ext_resource type="Resource" path="res://resources/weapons/mp5.tres" id="weapon_mp5"]
@@ -64,7 +76,7 @@
 
 [node name="MainGame" type="Node" unique_id=948538917]
 script = ExtResource("5_game")
-upgrades = Array[ExtResource("11_upgrade_script")]([ExtResource("upgrade_hollow_points"), ExtResource("upgrade_hair_trigger"), ExtResource("upgrade_extended_mag"), ExtResource("upgrade_speed_loader"), ExtResource("upgrade_ap_rounds"), ExtResource("upgrade_split_shot"), ExtResource("upgrade_high_velocity"), ExtResource("upgrade_deadeye"), ExtResource("upgrade_light_boots"), ExtResource("upgrade_vitality"), ExtResource("upgrade_field_medic"), ExtResource("upgrade_big_boom"), ExtResource("upgrade_adrenaline"), ExtResource("upgrade_steady_aim"), ExtResource("upgrade_glass_cannon"), ExtResource("upgrade_heavy_rounds"), ExtResource("upgrade_ricochet"), ExtResource("upgrade_chain_lightning"), ExtResource("upgrade_bloodthirst"), ExtResource("upgrade_thorns"), ExtResource("upgrade_incendiary"), ExtResource("upgrade_shockwave_dash"), ExtResource("upgrade_last_stand"), ExtResource("upgrade_second_chance"), ExtResource("upgrade_guardian_orb"), ExtResource("upgrade_combat_drone"), ExtResource("upgrade_thunder_rod"), ExtResource("upgrade_magnet")])
+upgrades = Array[ExtResource("11_upgrade_script")]([ExtResource("upgrade_hollow_points"), ExtResource("upgrade_hair_trigger"), ExtResource("upgrade_extended_mag"), ExtResource("upgrade_speed_loader"), ExtResource("upgrade_ap_rounds"), ExtResource("upgrade_split_shot"), ExtResource("upgrade_high_velocity"), ExtResource("upgrade_deadeye"), ExtResource("upgrade_light_boots"), ExtResource("upgrade_vitality"), ExtResource("upgrade_field_medic"), ExtResource("upgrade_big_boom"), ExtResource("upgrade_adrenaline"), ExtResource("upgrade_steady_aim"), ExtResource("upgrade_glass_cannon"), ExtResource("upgrade_heavy_rounds"), ExtResource("upgrade_ricochet"), ExtResource("upgrade_chain_lightning"), ExtResource("upgrade_bloodthirst"), ExtResource("upgrade_thorns"), ExtResource("upgrade_incendiary"), ExtResource("upgrade_shockwave_dash"), ExtResource("upgrade_last_stand"), ExtResource("upgrade_second_chance"), ExtResource("upgrade_guardian_orb"), ExtResource("upgrade_combat_drone"), ExtResource("upgrade_thunder_rod"), ExtResource("upgrade_magnet"), ExtResource("upgrade_whetstone"), ExtResource("upgrade_swift_strikes"), ExtResource("upgrade_long_reach"), ExtResource("upgrade_wide_arc"), ExtResource("upgrade_heavy_blows"), ExtResource("upgrade_vampiric_edge"), ExtResource("upgrade_flame_edge"), ExtResource("upgrade_iron_skin"), ExtResource("upgrade_sword_wave"), ExtResource("upgrade_overclock"), ExtResource("upgrade_heavy_payload"), ExtResource("upgrade_drone_bay")])
 weapons = Array[ExtResource("12_weapon_script")]([ExtResource("weapon_glock"), ExtResource("weapon_revolver"), ExtResource("weapon_mp5"), ExtResource("weapon_ak47"), ExtResource("weapon_bazooka"), ExtResource("weapon_heavy_bazooka")])
 
 [node name="ArenaGround" parent="." instance=ExtResource("17_ground")]

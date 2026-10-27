@@ -32,6 +32,7 @@ static func launch(from: Vector2, to: Vector2, splash_damage: float) -> void:
 
 
 func _ready() -> void:
+	add_to_group(&"acid_globs")
 	_marker = AnimatedSprite2D.new()
 	_marker.sprite_frames = SpriteSheetUtil.strip(MARKER, Vector2i(16, 8), 8.0, true)
 	_marker.play()
@@ -52,6 +53,23 @@ func _process(delta: float) -> void:
 	_glob.position = _start_offset.lerp(Vector2.ZERO, t) + Vector2(0.0, -ARC_HEIGHT * 4.0 * t * (1.0 - t))
 	if t >= 1.0:
 		_land()
+
+
+## Where the glob currently is in the air (for parries).
+func glob_position() -> Vector2:
+	return _glob.global_position if is_instance_valid(_glob) else global_position
+
+
+## Knocked out of the air by a melee swing: pops harmlessly.
+func deflect() -> void:
+	if _landed:
+		return
+	_landed = true
+	remove_from_group(&"acid_globs")
+	Fx.one_shot(preload("res://assets/floor38/fx/spark.png"), Vector2i(7, 7), 24.0, glob_position(), Fx.GLOW_COOL)
+	Sound.play(&"parry", glob_position())
+	DamageNumber.spawn_text(glob_position() + Vector2(0, -8), "PARRY!", Color("ffcd75"))
+	queue_free()
 
 
 func _land() -> void:
