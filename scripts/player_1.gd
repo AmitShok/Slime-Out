@@ -8,14 +8,27 @@ signal died
 
 const FRAME_SIZE := Vector2i(32, 32)
 const DIRECTIONS: Array[StringName] = [&"down", &"side", &"up"]
-## Per-frame body bob (px) baked into the hero sheet, so the gun can follow.
-## Must match art_src/tools/build_player.lua.
-const IDLE_BOB: Array[int] = [0, 0, 0, 0, 1, 1, 1, 1]
-const RUN_BOB: Array[int] = [1, 1, 0, 1, 1, 0]
+## Per-frame torso bob / lean (px) baked into the character sheets, so the
+## hands on the weapon stay attached. Must match art_src/tools/build_player.lua.
+const IDLE_BOB: Array[int] = [0, 0, 0, 1, 1, 1, 1, 0]
+const RUN_BOB: Array[int] = [0, 1, 1, 0, 0, 1, 1, 0]
+const DASH_BOB: Array[int] = [1, 1, 1, 1]
+const HURT_BOB: Array[int] = [0, 1]
+const RUN_LEAN := 1
+const DASH_LEAN := 2
+const HURT_LEAN: Array[int] = [-1, 0]
+## Run frames where a foot hits the ground (dust + footstep).
+const FOOTFALL_FRAMES: Array[int] = [0, 4]
+const HURT_ANIM_TIME := 0.24
+const DUST := preload("res://assets/mystic forest/sprites/particles/dust_particles_01.png")
+## Squash & stretch spring (scale) - snappy with a little wobble.
+const SQUASH_STIFFNESS := 300.0
+const SQUASH_DAMPING := 13.0
 
 static var _frames_cache: Dictionary = {}
 
-## Hero sheet: rows idle down/side/up, run down/side/up, death (4 frames).
+## Character sheet: idle d/s/u (8), run d/s/u (8), death (6), dash d/s/u (4),
+## hurt (down/side/up x2).
 @export var body_sheet: Texture2D
 
 # Dash variables
@@ -46,6 +59,11 @@ var _facing: StringName = &"down"
 var _weapon_rest := Vector2.ZERO
 var _lives_used := 0
 var _ghost_timer := 0.0
+var _hurt_anim_left := 0.0
+var _squash := Vector2.ONE
+var _squash_velocity := Vector2.ZERO
+var _last_frame := -1
+var _last_flip := false
 
 const SHOCKWAVE_RADIUS := 34.0
 const GHOST_INTERVAL := 0.035
@@ -116,6 +134,7 @@ func _physics_process(delta: float) -> void:
 
 	move_and_slide()
 	update_animation(direction)
+	_update_squash(delta)
 
 
 func _tick_timers(delta: float) -> void:
@@ -129,6 +148,9 @@ func _tick_timers(delta: float) -> void:
 			_spawn_afterimage()
 		if _dash_left <= 0.0:
 			_dash_grace_left = dash_grace
+			# Land from the dash: squash and kick up a little dust.
+			punch(Vector2(1.18, 0.86))
+			_dust(global_position, 2)
 			var shockwave := stats.get_stat(Stats.Stat.DASH_SHOCKWAVE)
 			if shockwave > 0.0:
 				Shockwave.spawn(global_position + Vector2(0, -5), SHOCKWAVE_RADIUS, shockwave, 220.0)
@@ -137,6 +159,7 @@ func _tick_timers(delta: float) -> void:
 		if _dash_grace_left <= 0.0:
 			_set_immune_glow(false)
 	_dash_cooldown_left = maxf(0.0, _dash_cooldown_left - delta)
+	_hurt_anim_left = maxf(0.0, _hurt_anim_left - delta)
 	if _invulnerable_left > 0.0:
 		_invulnerable_left -= delta
 		# Blink while invulnerable.
@@ -151,6 +174,9 @@ func _start_dash(direction: Vector2) -> void:
 	_dash_cooldown_left = dash_duration + stats.get_stat(Stats.Stat.DASH_COOLDOWN)
 	_ghost_timer = 0.0
 	Sound.play(&"dash", global_position)
+	# Push-off: stretch along the dash and burst dust behind.
+	punch(Vector2(1.3, 0.78) if absf(_dash_direction.x) > absf(_dash_direction.y) else Vector2(0.8, 1.28))
+	_dust(global_position - _dash_direction * 4.0, 3)
 	_dash_grace_left = 0.0
 	_dodged_this_dash = false
 	_dash_hits.clear()
@@ -226,16 +252,44 @@ func update_animation(direction: Vector2) -> void:
 	# Gun goes behind the body when aiming away from the camera.
 	weapon.show_behind_parent = _facing == &"up"
 
-	var moving := direction != Vector2.ZERO or is_dashing()
-	var anim := StringName(("run_" if moving else "idle_") + _facing)
+	var moving := direction != Vector2.ZERO
+	var state := "idle_"
+	var bob_table := IDLE_BOB
+	var lean := 0
+	if _hurt_anim_left > 0.0:
+		state = "hurt_"
+		bob_table = HURT_BOB
+	elif is_dashing():
+		state = "dash_"
+		bob_table = DASH_BOB
+		lean = DASH_LEAN
+	elif moving:
+		state = "run_"
+		bob_table = RUN_BOB
+		lean = RUN_LEAN
+	var anim := StringName(state + _facing)
 	if animated_sprite.animation != anim:
 		animated_sprite.play(anim)
-	animated_sprite.speed_scale = 2.2 if is_dashing() else 1.0
+		_last_frame = -1
+	# Run cadence follows actual speed (Light Boots make the legs go faster).
+	animated_sprite.speed_scale = clampf(velocity.length() / 115.0, 0.8, 1.6) if state == "run_" else 1.0
 
-	# Follow the baked-in body bob so the hands stay attached.
-	var bob_table := RUN_BOB if moving else IDLE_BOB
-	var bob: int = bob_table[animated_sprite.frame % bob_table.size()]
-	weapon.position = _weapon_rest + Vector2(0.0, bob + stats.weapon.mount_height)
+	var frame := animated_sprite.frame
+	if state == "hurt_":
+		lean = HURT_LEAN[frame % HURT_LEAN.size()]
+	if state == "run_" and frame != _last_frame and FOOTFALL_FRAMES.has(frame):
+		_footfall()
+	_last_frame = frame
+	# Quick squash when the body flips to face the other way.
+	if animated_sprite.flip_h != _last_flip:
+		_last_flip = animated_sprite.flip_h
+		punch(Vector2(0.86, 1.08))
+
+	# Follow the baked-in bob and lean so the hands stay on the weapon.
+	var bob: int = bob_table[frame % bob_table.size()]
+	var facing_sign := -1.0 if animated_sprite.flip_h else 1.0
+	var lean_x := lean * facing_sign if _facing == &"side" else 0.0
+	weapon.position = _weapon_rest + Vector2(lean_x, bob + stats.weapon.mount_height)
 
 
 func take_damage(amount: float) -> void:
@@ -251,6 +305,8 @@ func take_damage(amount: float) -> void:
 	Events.screen_shake.emit(hurt_shake)
 	Events.hit_stop(0.06)
 	Events.player_hurt.emit()
+	_hurt_anim_left = HURT_ANIM_TIME
+	punch(Vector2(1.22, 0.8))
 	Sound.play(&"player_hurt")
 	_play_hurt_flash()
 	var thorns := stats.get_stat(Stats.Stat.THORNS)
@@ -277,6 +333,7 @@ func _revive() -> void:
 	_invulnerable_left = REVIVE_INVULNERABILITY
 	_on_health_changed()
 	Shockwave.spawn(global_position + Vector2(0, -5), SHOCKWAVE_RADIUS * 2.0, 50.0, 400.0)
+	punch(Vector2(0.7, 1.35))
 	Events.player_revived.emit()
 	Sound.play(&"revive")
 
@@ -303,9 +360,41 @@ func die() -> void:
 	animated_sprite.modulate = Color.WHITE
 	animated_sprite.speed_scale = 1.0
 	animated_sprite.flip_h = false
+	animated_sprite.scale = Vector2.ONE
+	animated_sprite.position.y = -14.0
 	animated_sprite.play(&"death")
 	Sound.play(&"player_death")
 	died.emit()
+
+
+## Squash & stretch impulse; the spring settles it back to normal.
+func punch(target_scale: Vector2) -> void:
+	_squash = target_scale
+	_squash_velocity = Vector2.ZERO
+
+
+func _update_squash(delta: float) -> void:
+	var force := (Vector2.ONE - _squash) * SQUASH_STIFFNESS - _squash_velocity * SQUASH_DAMPING
+	_squash_velocity += force * delta
+	_squash += _squash_velocity * delta
+	animated_sprite.scale = _squash
+	# Scale around the feet, not the sprite centre (feet sit 14 px below it).
+	animated_sprite.position.y = -14.0 * _squash.y
+
+
+func _footfall() -> void:
+	punch(Vector2(1.06, 0.94))
+	var behind := -1.0 if animated_sprite.flip_h else 1.0
+	_dust(global_position + Vector2(-3.0 * behind if _facing == &"side" else 0.0, 0.0), 1)
+	Sound.play(&"footstep", global_position)
+
+
+## Small puffs kicked up at the feet (drawn under the characters).
+func _dust(at: Vector2, count: int) -> void:
+	for i in count:
+		var puff := Fx.one_shot(DUST, Vector2i(12, 12), randf_range(12.0, 16.0), at + Vector2(randf_range(-3, 3), randf_range(-1, 1)), Color(1, 1, 1, 0.75), 0.0, &"decal_layer")
+		puff.flip_h = randf() < 0.5
+		puff.scale = Vector2.ONE * randf_range(0.7, 1.0)
 
 
 func _play_hurt_flash() -> void:
@@ -326,9 +415,12 @@ static func _frames_for(sheet: Texture2D) -> SpriteFrames:
 		return _frames_cache[sheet]
 	var frames := SpriteFrames.new()
 	frames.remove_animation(&"default")
+	var hurt := SpriteSheetUtil.slice(sheet, FRAME_SIZE, 10, 6)
 	for d in DIRECTIONS.size():
-		SpriteSheetUtil.add_animation(frames, StringName("idle_" + DIRECTIONS[d]), SpriteSheetUtil.slice(sheet, FRAME_SIZE, d, IDLE_BOB.size()), 6.0, true)
-		SpriteSheetUtil.add_animation(frames, StringName("run_" + DIRECTIONS[d]), SpriteSheetUtil.slice(sheet, FRAME_SIZE, 3 + d, RUN_BOB.size()), 12.0, true)
-	SpriteSheetUtil.add_animation(frames, &"death", SpriteSheetUtil.slice(sheet, FRAME_SIZE, 6, 4), 6.0, false)
+		SpriteSheetUtil.add_animation(frames, StringName("idle_" + DIRECTIONS[d]), SpriteSheetUtil.slice(sheet, FRAME_SIZE, d, IDLE_BOB.size()), 7.0, true)
+		SpriteSheetUtil.add_animation(frames, StringName("run_" + DIRECTIONS[d]), SpriteSheetUtil.slice(sheet, FRAME_SIZE, 3 + d, RUN_BOB.size()), 14.0, true)
+		SpriteSheetUtil.add_animation(frames, StringName("dash_" + DIRECTIONS[d]), SpriteSheetUtil.slice(sheet, FRAME_SIZE, 7 + d, DASH_BOB.size()), 18.0, true)
+		SpriteSheetUtil.add_animation(frames, StringName("hurt_" + DIRECTIONS[d]), hurt.slice(d * 2, d * 2 + 2), 10.0, false)
+	SpriteSheetUtil.add_animation(frames, &"death", SpriteSheetUtil.slice(sheet, FRAME_SIZE, 6, 6), 8.0, false)
 	_frames_cache[sheet] = frames
 	return frames

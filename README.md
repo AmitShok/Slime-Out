@@ -55,6 +55,8 @@ Upgrades never go to waste: they are stored as weapon-agnostic modifiers, so whe
 
 **Feel & visuals**
 - Hand-made pixel art: hero, slimes, FX and UI drawn in Aseprite, plus a forest arena built from the Mystic Woods tileset.
+- **Hand-animated survivors**: 8-frame runs with overlapping action (the head trails the body), forward lean, flapping scarves and capes, swaying plumes, plus dedicated dash, hurt and 6-frame death animations.
+- **Squash & stretch** on every step, dash, hit and turn, with footstep dust and footstep sounds.
 - **Juice everywhere** (the Vlambeer recipe): muzzle flares, ejected brass casings, recoil, camera kick, smooth noise-based screen shake, hit-stop, damage numbers, goo splats that stay on the floor.
 - **HDR bloom** on bullets, explosions, orbs, lightning and gems.
 - **CRT post-processing** — curved glass, scanlines, aperture grille, chromatic aberration and vignette (adjustable or off).

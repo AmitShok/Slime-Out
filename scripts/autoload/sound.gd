@@ -51,6 +51,7 @@ const SOUNDS := {
 	&"burn": { "files": [N + "elemental_fire3.wav"], "db": -20.0, "jitter": 0.1, "voices": 1, "interval": 0.4 },
 	&"player_hurt": { "files": [N + "hit_impact_hit2.wav"], "db": -3.0, "jitter": 0.05, "voices": 1 },
 	&"player_death": { "files": [N + "hit_impact_impact3.wav"], "db": 0.0, "pitch": 0.7, "voices": 1 },
+	&"footstep": { "files": [N + "elemental_grass.wav", N + "elemental_grass2.wav"], "db": 6.0, "jitter": 0.15, "voices": 2, "interval": 0.1 },
 	&"dash": { "files": [N + "whoosh_slash_whoosh.wav"], "db": -7.0, "jitter": 0.08, "voices": 2 },
 	&"dodge": { "files": [N + "magic_skill_magic2.wav"], "db": -10.0, "jitter": 0.04, "pitch": 1.2, "voices": 1 },
 	&"gem": { "files": [N + "bonus_coin3.wav"], "db": -15.0, "voices": 4, "interval": 0.025 },

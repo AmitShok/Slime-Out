@@ -315,6 +315,30 @@ local ENGINEER_TORSO = {
   up = GUNNER_TORSO.up,
 }
 
+-- Secondary-motion overlays (frames: 1 hang, 2 sway, 3 flow, 4 streaming).
+-- x/y are offsets from the torso's top-left; side tails draw behind the body.
+local SCARF_TAIL = {
+  side = { x = -4, y = 0, frames = {
+    { "....q", "...qr", "...r." },
+    { "...qr", "..qr.", "..r.." },
+    { "..qqr", ".qrr.", "qr..." },
+    { ".qqrr", "qrr..", "r...." },
+  }},
+  up = { x = 5, y = 1, frames = {
+    { ".rq", ".rq", ".q." },
+    { "rq.", "rq.", "q.." },
+    { ".rq", "rq.", "q.." },
+    { "rq.", "q..", "..." },
+  }},
+}
+local KNIGHT_CAPE = {
+  side = { x = -3, y = 1, frames = {
+    { "...q", "..qr", "..qr", "..qr", "..qr", "...q" },
+    { "..qq", ".qrr", ".qrr", "..qr", "..qr", "...q" },
+    { ".qqr", "qrr.", "qrr.", ".qr.", "..q.", "...." },
+    { "qqrr", "qrr.", "rr..", "q...", "....", "...." },
+  }},
+}
 local PAL, HEAD, TORSO, HAND = GUNNER_PAL, GUNNER_HEAD, GUNNER_TORSO, SKIN_HAND
 local HEAD_BLINK = nil
 local SHADOW = {
@@ -416,49 +440,158 @@ local function lying(buf)
 end
 
 -- Animations ---------------------------------------------------------------
-local IDLE_BOB = { 0, 0, 0, 0, 1, 1, 1, 1 }
-local RUN_BOB = { 1, 1, 0, 1, 1, 0 }
-local FRONT_LIFT_L = { 0, 1, 2, 1, 0, 0 }
-local FRONT_LIFT_R = { 1, 0, 0, 0, 1, 2 }
-local SIDE_NEAR_DX = { -3, -1, 1, 3, 1, -1 }
-local SIDE_NEAR_LIFT = { 0, 1, 1, 0, 0, 0 }
-local SIDE_FAR_DX = { 3, 1, -1, -3, -1, 1 }
-local SIDE_FAR_LIFT = { 0, 0, 0, 0, 1, 1 }
+-- Sheet rows: 0-2 idle (8), 3-5 run (8), 6 death (6), 7-9 dash (4),
+-- 10 hurt (down a,b / side a,b / up a,b). Must match Player._frames_for and
+-- the bob/lean tables in player_1.gd.
+--
+-- Juice baked into the art:
+--  * overlapping action: the head lags the torso bob by one frame
+--  * side run leans forward 1 px, dash 2 px, hurt jolts back
+--  * secondary motion: scarf / bandana tails and the Knight's cape flap,
+--    the Knight's plume sways
+local IDLE_TORSO = { 0, 0, 0, 1, 1, 1, 1, 0 }
+local IDLE_HEAD  = { 0, 0, 0, 0, 1, 1, 1, 1 }
+local IDLE_TAIL  = { 1, 1, 1, 1, 2, 2, 1, 1 }
+local IDLE_PLUME = { 0, 0, 0, 0, 1, 1, 0, 0 }
+
+local RUN_TORSO = { 0, 1, 1, 0, 0, 1, 1, 0 }
+local RUN_HEAD  = { 0, 0, 1, 1, 0, 0, 1, 1 }
+local RUN_TAIL  = { 3, 4, 3, 2, 3, 4, 3, 2 }
+local RUN_PLUME = { 0, 0, 1, 0, 0, 0, -1, 0 }
+local RUN_LEAN = 1
+-- Side: near leg plants forward on frame 1 and sweeps back; it lifts while
+-- swinging forward again. The far leg is half a cycle behind.
+local SIDE_NEAR_DX   = { 3, 2, 0, -2, -3, -2, 0, 2 }
+local SIDE_NEAR_LIFT = { 0, 0, 0, 0, 0, 1, 2, 1 }
+local SIDE_FAR_DX    = { -3, -2, 0, 2, 3, 2, 0, -2 }
+local SIDE_FAR_LIFT  = { 0, 1, 2, 1, 0, 0, 0, 0 }
+local FRONT_LIFT_L = { 0, 1, 2, 1, 0, 0, 0, 0 }
+local FRONT_LIFT_R = { 0, 0, 0, 0, 0, 1, 2, 1 }
+
+local DASH_TORSO = { 1, 1, 1, 1 }
+local DASH_HEAD  = { 1, 1, 2, 1 }
+local DASH_LEAN = 2
+
+local function sway_head(head, rows, dx)
+  if dx == 0 then return head end
+  local out = {}
+  for i, row in ipairs(head) do
+    if i <= rows then
+      if dx > 0 then out[i] = string.rep(".", dx) .. row:sub(1, #row - dx)
+      else out[i] = row:sub(1 - dx) .. string.rep(".", -dx) end
+    else
+      out[i] = row
+    end
+  end
+  return out
+end
 
 local function build(def)
 PAL, HEAD, TORSO, HAND = def.pal, def.head, def.torso, def.hand
-HEAD_BLINK = { down = blink(HEAD.down, 9), side = blink(HEAD.side, 8), up = HEAD.up }
+local closed = def.closed or "s"
+local function shut(head, eye_row)
+  local out = {}
+  for i, row in ipairs(head) do out[i] = row end
+  out[eye_row] = out[eye_row]:gsub("[ew]", closed)
+  out[eye_row + 1] = out[eye_row + 1]:gsub("[eb]", "Z")
+  return out
+end
+HEAD_BLINK = { down = shut(HEAD.down, 9), side = shut(HEAD.side, 8), up = HEAD.up }
+
+-- One frame: legs, then (behind the body) side tail, head, torso, back tail.
+local function compose(dir, legs_fn, o)
+  local buf = blank()
+  legs_fn(buf)
+  local lean = (dir == "side") and (o.lean or 0) or 0
+  local tb, hb = o.tb or 0, o.hb or 0
+  local tail = def.tail and o.tail and def.tail[dir]
+  if tail and dir == "side" then
+    stamp(buf, tail.frames[o.tail], 10 + lean + tail.x, TORSO_Y + tb + tail.y)
+  end
+  local head = o.head or HEAD[dir]
+  if def.plume_rows and o.plume then
+    head = sway_head(head, def.plume_rows, (dir == "side") and math.min(o.plume, 0) - (o.trail or 0) or o.plume)
+  end
+  stamp(buf, head, 9 + lean, HEAD_Y + hb)
+  stamp(buf, TORSO[dir], 10 + lean, TORSO_Y + tb)
+  if tail and dir ~= "side" then
+    stamp(buf, tail.frames[o.tail], 10 + tail.x, TORSO_Y + tb + tail.y)
+  end
+  return buf
+end
+
+local function legs_idle(dir)
+  if dir == "side" then return function(b) side_legs(b, 0, 0, 1, 0) end end
+  return function(b) front_legs(b, 0, 0) end
+end
+
 local rows = {}
+-- Idle: breathing, head settles a frame late, tail drifts, blink on 8.
 for _, dir in ipairs({ "down", "side", "up" }) do
   local frames = {}
   for i = 1, 8 do
-    local head = (i == 8) and HEAD_BLINK[dir] or HEAD[dir]
-    local legs = (dir == "side") and function(b) side_legs(b, 0, 0, 1, 0) end or function(b) front_legs(b, 0, 0) end
-    frames[i] = frame(dir, legs, IDLE_BOB[i], head)
+    frames[i] = compose(dir, legs_idle(dir), {
+      tb = IDLE_TORSO[i], hb = IDLE_HEAD[i], tail = IDLE_TAIL[i], plume = IDLE_PLUME[i],
+      head = (i == 8) and HEAD_BLINK[dir] or nil,
+    })
   end
   rows[#rows + 1] = frames
 end
+-- Run: 8-frame contact/down/pass/up cycle.
 for _, dir in ipairs({ "down", "side", "up" }) do
   local frames = {}
-  for i = 1, 6 do
+  for i = 1, 8 do
     local legs
     if dir == "side" then
       legs = function(b) side_legs(b, SIDE_NEAR_DX[i], SIDE_NEAR_LIFT[i], SIDE_FAR_DX[i], SIDE_FAR_LIFT[i]) end
     else
       legs = function(b) front_legs(b, FRONT_LIFT_L[i], FRONT_LIFT_R[i]) end
     end
-    frames[i] = frame(dir, legs, RUN_BOB[i])
+    frames[i] = compose(dir, legs, {
+      tb = RUN_TORSO[i], hb = RUN_HEAD[i], lean = RUN_LEAN, tail = RUN_TAIL[i],
+      plume = RUN_PLUME[i], trail = 1,
+    })
   end
   rows[#rows + 1] = frames
 end
 
--- Death: flinch, crumple to knees, fall, rest.
+-- Death: hit, stagger, knees, fall, bounce, rest.
+local hit = compose("down", legs_idle("down"), { tb = 0, hb = -1, head = HEAD_BLINK.down, tail = 2 })
+local stagger = compose("down", function(b) front_legs(b, 0, 1) end, { tb = 2, hb = 2, head = HEAD_BLINK.down, tail = 1 })
 local crumple = blank()
 front_legs(crumple, 2, 2)
-upper(crumple, "down", 4, HEAD_BLINK.down)
-local fallen = lying(frame("side", function(b) side_legs(b, 0, 0, 1, 0) end, 0, HEAD_BLINK.side))
-rows[#rows + 1] = { frame("down", function(b) front_legs(b, 0, 0) end, 1, HEAD_BLINK.down), crumple, fallen, fallen }
+stamp(crumple, HEAD_BLINK.down, 9, HEAD_Y + 4)
+stamp(crumple, TORSO.down, 10, TORSO_Y + 4)
+local fallen = lying(compose("side", function(b) side_legs(b, 0, 0, 1, 0) end, { head = HEAD_BLINK.side }))
+local bounced = blank()
+for y = 1, SIZE - 1 do for x = 0, SIZE - 1 do bounced[y - 1][x] = fallen[y][x] end end
+rows[#rows + 1] = { hit, stagger, crumple, fallen, bounced, fallen }
 
+-- Dash: tucked legs, low and leaning hard, tail streaming.
+for _, dir in ipairs({ "down", "side", "up" }) do
+  local frames = {}
+  for i = 1, 4 do
+    local legs
+    if dir == "side" then
+      local near_lift = (i == 3) and 3 or 2
+      legs = function(b) side_legs(b, 3, near_lift, -2, 1) end
+    else
+      local l, r = (i % 2 == 1) and 2 or 1, (i % 2 == 1) and 1 or 2
+      legs = function(b) front_legs(b, l, r) end
+    end
+    frames[i] = compose(dir, legs, { tb = DASH_TORSO[i], hb = DASH_HEAD[i], lean = DASH_LEAN, tail = 4, plume = -1, trail = 1 })
+  end
+  rows[#rows + 1] = frames
+end
+
+-- Hurt: (a) jolted back with eyes squeezed shut, (b) recoil crouch.
+local hurt = {}
+for _, dir in ipairs({ "down", "side", "up" }) do
+  hurt[#hurt + 1] = compose(dir, legs_idle(dir), { tb = 0, hb = -1, lean = -1, head = HEAD_BLINK[dir], tail = 2, plume = 1 })
+  hurt[#hurt + 1] = compose(dir, legs_idle(dir), { tb = 1, hb = 1, lean = 0, head = HEAD_BLINK[dir], tail = 1 })
+end
+rows[#rows + 1] = hurt
+local DEATH_ROW = 7
 -- Write --------------------------------------------------------------------
 local draw = function(image, buf, ox, oy, name)
   for y = 0, SIZE - 1 do
@@ -487,7 +620,7 @@ local spr = Sprite(SIZE * 8, SIZE * #rows, ColorMode.RGB)
 local img = spr.cels[1].image
 for r, frames in ipairs(rows) do
   for f, buf in ipairs(frames) do
-    draw(img, with_shadow(buf, r == #rows and f >= 3), (f - 1) * SIZE, (r - 1) * SIZE, "row" .. r)
+    draw(img, with_shadow(buf, r == DEATH_ROW and f >= 4), (f - 1) * SIZE, (r - 1) * SIZE, "row" .. r)
   end
 end
 spr:saveAs(root .. "/art_src/" .. def.file .. ".aseprite")
@@ -508,6 +641,6 @@ px.preview(root .. "/assets/floor38/player/" .. def.file .. ".png", root .. "/ar
 print(def.name .. " built")
 end
 
-build({ name = "gunner", file = "hero", hand_file = "hand", pal = GUNNER_PAL, head = GUNNER_HEAD, torso = GUNNER_TORSO, hand = SKIN_HAND })
-build({ name = "knight", file = "knight", hand_file = "hand_knight", pal = KNIGHT_PAL, head = KNIGHT_HEAD, torso = KNIGHT_TORSO, hand = GAUNTLET_HAND })
-build({ name = "engineer", file = "engineer", hand_file = "hand_engineer", pal = ENGINEER_PAL, head = ENGINEER_HEAD, torso = ENGINEER_TORSO, hand = SKIN_HAND })
+build({ name = "gunner", file = "hero", hand_file = "hand", pal = GUNNER_PAL, head = GUNNER_HEAD, torso = GUNNER_TORSO, hand = SKIN_HAND, tail = SCARF_TAIL })
+build({ name = "knight", file = "knight", hand_file = "hand_knight", pal = KNIGHT_PAL, head = KNIGHT_HEAD, torso = KNIGHT_TORSO, hand = GAUNTLET_HAND, tail = KNIGHT_CAPE, plume_rows = 2, closed = "V" })
+build({ name = "engineer", file = "engineer", hand_file = "hand_engineer", pal = ENGINEER_PAL, head = ENGINEER_HEAD, torso = ENGINEER_TORSO, hand = SKIN_HAND, tail = SCARF_TAIL })

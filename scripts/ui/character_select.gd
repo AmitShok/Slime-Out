@@ -62,8 +62,13 @@ func _process(delta: float) -> void:
 	_camera.position = Vector2(40, -10) + Vector2(sin(_time * 0.11) * 30.0, cos(_time * 0.08) * 16.0)
 	_stage_layout()
 	# Idle breathing comes from the sprite; add a slow turn + an attack demo.
+	# Every few seconds jog in place to show off the run cycle.
+	var want_run := fmod(_time, 6.0) > 4.2
+	var anim := &"run_side" if want_run else &"idle_side"
+	if _body.sprite_frames and _body.animation != anim:
+		_body.play(anim)
 	_attack_timer -= delta
-	if _attack_timer <= 0.0:
+	if _attack_timer <= 0.0 and not want_run:
 		_attack_timer = randf_range(1.6, 2.6)
 		_demo_attack()
 	var glow := 0.55 + 0.15 * sin(_time * 2.4)
