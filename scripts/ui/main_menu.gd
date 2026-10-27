@@ -62,9 +62,13 @@ var _selected: Button
 var _drip_timer := 0.8
 var _squash_timer := 1.5
 var _options: OptionsMenu
+var _menu_top := -40.0
 
 
 func _ready() -> void:
+	# Never inherit a paused tree / hit-stop from the scene we came from.
+	get_tree().paused = false
+	Engine.time_scale = 1.0
 	for path in SLIME_TYPES:
 		_slime_data.append(load(path))
 	_build_hero()
@@ -308,13 +312,19 @@ func _build_ui() -> void:
 	_logo.add_child(tagline)
 
 	# Menu column on the right, framed by animated crosshair brackets.
-	_menu_box.set_anchors_preset(Control.PRESET_CENTER_RIGHT)
-	_menu_box.position = Vector2(-380, -30)
+	# Anchored to the right edge, vertically centred: holds at any window size.
+	_menu_box.anchor_left = 1.0
+	_menu_box.anchor_right = 1.0
+	_menu_box.anchor_top = 0.5
+	_menu_box.anchor_bottom = 0.5
+	_menu_box.grow_vertical = Control.GROW_DIRECTION_END
+	_set_menu_offset(0.0)
 	_menu_box.add_theme_constant_override(&"separation", 14)
 	root.add_child(_menu_box)
 	var has_run := RunSave.exists()
 	if has_run:
-		_menu_box.position.y = -95.0
+		_menu_top = -110.0
+		_set_menu_offset(0.0)
 	var entries := [["CONTINUE", _on_continue], ["NEW RUN", _on_play]] if has_run else [["PLAY", _on_play]]
 	entries.append_array([["OPTIONS", _on_options], ["QUIT", _on_quit]])
 	for entry in entries:
@@ -385,10 +395,9 @@ func _intro() -> void:
 			drop.tween_property(rect, "position:y", final_y, 0.55).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
 			rect.set_meta(&"base_y", final_y)
 	_menu_box.modulate.a = 0.0
-	var start_x := _menu_box.position.x
-	_menu_box.position.x += 220
+	_set_menu_offset(220.0)
 	var slide := create_tween().set_parallel()
-	slide.tween_property(_menu_box, "position:x", start_x, 0.6).set_delay(0.9).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	slide.tween_method(_set_menu_offset, 220.0, 0.0, 0.6).set_delay(0.9).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	slide.tween_property(_menu_box, "modulate:a", 1.0, 0.4).set_delay(0.9)
 	slide.chain().tween_callback(_buttons[0].grab_focus)
 
@@ -457,6 +466,13 @@ func _update_selector(delta: float) -> void:
 	for i in 4:
 		_selector[i].visible = _menu_box.modulate.a > 0.5
 		_selector[i].global_position = _selector[i].global_position.lerp(targets[i], minf(1.0, delta * 18.0)).round()
+
+
+func _set_menu_offset(slide: float) -> void:
+	_menu_box.offset_left = -380.0 + slide
+	_menu_box.offset_right = -80.0 + slide
+	_menu_box.offset_top = _menu_top
+	_menu_box.offset_bottom = _menu_top
 
 
 func _best_round() -> int:
