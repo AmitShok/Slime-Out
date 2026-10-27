@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="EnemyData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/enemy_data.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/floor38/enemies/slime_splitter.png" id="2_sheet"]
+[ext_resource type="Resource" path="res://resources/enemies/slime_splitter_mini.tres" id="3_mini"]
+
+[resource]
+script = ExtResource("1_script")
+sheet = ExtResource("2_sheet")
+id = &"slime_splitter"
+display_name = "Splitter Slime"
+sprite_scale = 2.0
+max_health = 80.0
+speed = 36.0
+contact_damage = 14.0
+knockback_resistance = 0.4
+radius = 6.0
+split_into = ExtResource("3_mini")
+split_count = 3
+min_round = 6
+spawn_weight = 0.08
+weight_per_round = 0.02
+goo_color = Color(0.9608, 0.6392, 0.7804, 1)
+xp_value = 3.0

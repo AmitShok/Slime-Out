@@ -1,0 +1,85 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/game_over_screen.gd" id="1_script"]
+
+[node name="GameOverScreen" type="CanvasLayer"]
+process_mode = 3
+layer = 6
+script = ExtResource("1_script")
+
+[node name="Root" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Dim" type="ColorRect" parent="Root"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.09, 0.03, 0.06, 0.78)
+
+[node name="Center" type="CenterContainer" parent="Root"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="Root/Center"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Title" type="Label" parent="Root/Center/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.937, 0.49, 0.341, 1)
+theme_override_constants/outline_size = 16
+theme_override_font_sizes/font_size = 80
+text = "YOU DIED"
+horizontal_alignment = 1
+
+[node name="Summary" type="Label" parent="Root/Center/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "You fell on round 1"
+horizontal_alignment = 1
+
+[node name="Best" type="Label" parent="Root/Center/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.804, 0.459, 1)
+theme_override_font_sizes/font_size = 20
+text = "Best: round 1"
+horizontal_alignment = 1
+
+[node name="Spacer" type="Control" parent="Root/Center/VBox"]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+
+[node name="RestartButton" type="Button" parent="Root/Center/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Try Again"
+
+[node name="MenuButton" type="Button" parent="Root/Center/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Main Menu"
+
+[node name="Hint" type="Label" parent="Root/Center/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.58, 0.69, 0.761, 1)
+theme_override_font_sizes/font_size = 14
+text = "or press R"
+horizontal_alignment = 1

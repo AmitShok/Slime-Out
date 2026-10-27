@@ -1,0 +1,137 @@
+[gd_scene format=4 uid="uid://ddvf4dmdhbbfj"]
+
+[ext_resource type="PackedScene" uid="uid://coanosf06dsj8" path="res://scenes/player_1.tscn" id="2_72e8q"]
+[ext_resource type="Script" path="res://scripts/wave_manager.gd" id="3_waves"]
+[ext_resource type="PackedScene" uid="uid://dncmj3iq0oics" path="res://scenes/enemy.tscn" id="4_0rdsr"]
+[ext_resource type="Script" path="res://scripts/game.gd" id="5_game"]
+[ext_resource type="Script" path="res://scripts/game_camera.gd" id="6_camera"]
+[ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="7_hud"]
+[ext_resource type="PackedScene" path="res://scenes/ui/upgrade_screen.tscn" id="8_upgrades"]
+[ext_resource type="PackedScene" path="res://scenes/ui/game_over_screen.tscn" id="9_gameover"]
+[ext_resource type="PackedScene" path="res://scenes/ui/pause_menu.tscn" id="10_pause"]
+[ext_resource type="PackedScene" path="res://scenes/ui/build_panel.tscn" id="16_build"]
+[ext_resource type="PackedScene" path="res://scenes/arena/arena_ground.tscn" id="17_ground"]
+[ext_resource type="PackedScene" path="res://scenes/arena/arena_props.tscn" id="18_props"]
+[ext_resource type="PackedScene" path="res://scenes/ui/crt.tscn" id="19_crt"]
+[ext_resource type="Script" path="res://scripts/ui/reticle.gd" id="20_reticle"]
+[ext_resource type="Script" path="res://scripts/ui/options_menu.gd" id="21_options"]
+[ext_resource type="PackedScene" path="res://scenes/ui/post_fx.tscn" id="14_postfx"]
+[ext_resource type="Environment" path="res://resources/ui/world_glow.tres" id="15_glow"]
+[ext_resource type="Script" path="res://scripts/data/upgrade_data.gd" id="11_upgrade_script"]
+[ext_resource type="Script" path="res://scripts/data/weapon_data.gd" id="12_weapon_script"]
+[ext_resource type="Script" path="res://scripts/data/enemy_data.gd" id="13_enemy_script"]
+[ext_resource type="Resource" path="res://resources/enemies/slime_king.tres" id="enemy_slime_king"]
+[ext_resource type="Resource" path="res://resources/upgrades/hollow_points.tres" id="upgrade_hollow_points"]
+[ext_resource type="Resource" path="res://resources/upgrades/hair_trigger.tres" id="upgrade_hair_trigger"]
+[ext_resource type="Resource" path="res://resources/upgrades/extended_mag.tres" id="upgrade_extended_mag"]
+[ext_resource type="Resource" path="res://resources/upgrades/speed_loader.tres" id="upgrade_speed_loader"]
+[ext_resource type="Resource" path="res://resources/upgrades/ap_rounds.tres" id="upgrade_ap_rounds"]
+[ext_resource type="Resource" path="res://resources/upgrades/split_shot.tres" id="upgrade_split_shot"]
+[ext_resource type="Resource" path="res://resources/upgrades/high_velocity.tres" id="upgrade_high_velocity"]
+[ext_resource type="Resource" path="res://resources/upgrades/deadeye.tres" id="upgrade_deadeye"]
+[ext_resource type="Resource" path="res://resources/upgrades/light_boots.tres" id="upgrade_light_boots"]
+[ext_resource type="Resource" path="res://resources/upgrades/vitality.tres" id="upgrade_vitality"]
+[ext_resource type="Resource" path="res://resources/upgrades/field_medic.tres" id="upgrade_field_medic"]
+[ext_resource type="Resource" path="res://resources/upgrades/big_boom.tres" id="upgrade_big_boom"]
+[ext_resource type="Resource" path="res://resources/upgrades/adrenaline.tres" id="upgrade_adrenaline"]
+[ext_resource type="Resource" path="res://resources/upgrades/steady_aim.tres" id="upgrade_steady_aim"]
+[ext_resource type="Resource" path="res://resources/upgrades/glass_cannon.tres" id="upgrade_glass_cannon"]
+[ext_resource type="Resource" path="res://resources/upgrades/heavy_rounds.tres" id="upgrade_heavy_rounds"]
+[ext_resource type="Resource" path="res://resources/upgrades/ricochet.tres" id="upgrade_ricochet"]
+[ext_resource type="Resource" path="res://resources/upgrades/chain_lightning.tres" id="upgrade_chain_lightning"]
+[ext_resource type="Resource" path="res://resources/upgrades/bloodthirst.tres" id="upgrade_bloodthirst"]
+[ext_resource type="Resource" path="res://resources/upgrades/thorns.tres" id="upgrade_thorns"]
+[ext_resource type="Resource" path="res://resources/upgrades/incendiary.tres" id="upgrade_incendiary"]
+[ext_resource type="Resource" path="res://resources/upgrades/shockwave_dash.tres" id="upgrade_shockwave_dash"]
+[ext_resource type="Resource" path="res://resources/upgrades/last_stand.tres" id="upgrade_last_stand"]
+[ext_resource type="Resource" path="res://resources/upgrades/second_chance.tres" id="upgrade_second_chance"]
+[ext_resource type="Resource" path="res://resources/upgrades/guardian_orb.tres" id="upgrade_guardian_orb"]
+[ext_resource type="Resource" path="res://resources/upgrades/combat_drone.tres" id="upgrade_combat_drone"]
+[ext_resource type="Resource" path="res://resources/upgrades/thunder_rod.tres" id="upgrade_thunder_rod"]
+[ext_resource type="Resource" path="res://resources/upgrades/magnet.tres" id="upgrade_magnet"]
+[ext_resource type="Resource" path="res://resources/weapons/glock.tres" id="weapon_glock"]
+[ext_resource type="Resource" path="res://resources/weapons/revolver.tres" id="weapon_revolver"]
+[ext_resource type="Resource" path="res://resources/weapons/mp5.tres" id="weapon_mp5"]
+[ext_resource type="Resource" path="res://resources/weapons/ak47.tres" id="weapon_ak47"]
+[ext_resource type="Resource" path="res://resources/weapons/bazooka.tres" id="weapon_bazooka"]
+[ext_resource type="Resource" path="res://resources/weapons/heavy_bazooka.tres" id="weapon_heavy_bazooka"]
+[ext_resource type="Resource" path="res://resources/enemies/slime.tres" id="enemy_slime"]
+[ext_resource type="Resource" path="res://resources/enemies/slime_swift.tres" id="enemy_slime_swift"]
+[ext_resource type="Resource" path="res://resources/enemies/slime_brute.tres" id="enemy_slime_brute"]
+[ext_resource type="Resource" path="res://resources/enemies/slime_spitter.tres" id="enemy_slime_spitter"]
+[ext_resource type="Resource" path="res://resources/enemies/slime_splitter.tres" id="enemy_slime_splitter"]
+[ext_resource type="Resource" path="res://resources/enemies/slime_charger.tres" id="enemy_slime_charger"]
+
+[node name="MainGame" type="Node" unique_id=948538917]
+script = ExtResource("5_game")
+upgrades = Array[ExtResource("11_upgrade_script")]([ExtResource("upgrade_hollow_points"), ExtResource("upgrade_hair_trigger"), ExtResource("upgrade_extended_mag"), ExtResource("upgrade_speed_loader"), ExtResource("upgrade_ap_rounds"), ExtResource("upgrade_split_shot"), ExtResource("upgrade_high_velocity"), ExtResource("upgrade_deadeye"), ExtResource("upgrade_light_boots"), ExtResource("upgrade_vitality"), ExtResource("upgrade_field_medic"), ExtResource("upgrade_big_boom"), ExtResource("upgrade_adrenaline"), ExtResource("upgrade_steady_aim"), ExtResource("upgrade_glass_cannon"), ExtResource("upgrade_heavy_rounds"), ExtResource("upgrade_ricochet"), ExtResource("upgrade_chain_lightning"), ExtResource("upgrade_bloodthirst"), ExtResource("upgrade_thorns"), ExtResource("upgrade_incendiary"), ExtResource("upgrade_shockwave_dash"), ExtResource("upgrade_last_stand"), ExtResource("upgrade_second_chance"), ExtResource("upgrade_guardian_orb"), ExtResource("upgrade_combat_drone"), ExtResource("upgrade_thunder_rod"), ExtResource("upgrade_magnet")])
+weapons = Array[ExtResource("12_weapon_script")]([ExtResource("weapon_glock"), ExtResource("weapon_revolver"), ExtResource("weapon_mp5"), ExtResource("weapon_ak47"), ExtResource("weapon_bazooka"), ExtResource("weapon_heavy_bazooka")])
+
+[node name="ArenaGround" parent="." instance=ExtResource("17_ground")]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = ExtResource("15_glow")
+
+[node name="Decals" type="Node2D" parent="." groups=["decal_layer"]]
+
+[node name="Pickups" type="Node2D" parent="." groups=["pickup_layer"]]
+
+[node name="Entities" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="Player" parent="Entities" instance=ExtResource("2_72e8q")]
+unique_name_in_owner = true
+position = Vector2(13, 0)
+
+[node name="ArenaProps" parent="Entities" instance=ExtResource("18_props")]
+
+[node name="Camera2D" type="Camera2D" parent="Entities/Player"]
+ignore_rotation = false
+zoom = Vector2(4, 4)
+limit_left = -500
+limit_top = -340
+limit_right = 516
+limit_bottom = 340
+position_smoothing_enabled = true
+position_smoothing_speed = 9.0
+script = ExtResource("6_camera")
+
+[node name="Projectiles" type="Node2D" parent="." groups=["projectile_layer"]]
+z_index = 1
+
+[node name="FX" type="Node2D" parent="." groups=["fx_layer"]]
+z_index = 10
+
+[node name="WaveManager" type="Node" parent="." node_paths=PackedStringArray("spawn_parent")]
+unique_name_in_owner = true
+script = ExtResource("3_waves")
+enemy_scene = ExtResource("4_0rdsr")
+enemy_types = Array[ExtResource("13_enemy_script")]([ExtResource("enemy_slime"), ExtResource("enemy_slime_swift"), ExtResource("enemy_slime_brute"), ExtResource("enemy_slime_spitter"), ExtResource("enemy_slime_splitter"), ExtResource("enemy_slime_charger")])
+boss = ExtResource("enemy_slime_king")
+spawn_parent = NodePath("../Entities")
+
+[node name="PostFX" parent="." instance=ExtResource("14_postfx")]
+
+[node name="HUD" parent="." instance=ExtResource("7_hud")]
+unique_name_in_owner = true
+
+[node name="UpgradeScreen" parent="." instance=ExtResource("8_upgrades")]
+unique_name_in_owner = true
+
+[node name="GameOverScreen" parent="." instance=ExtResource("9_gameover")]
+unique_name_in_owner = true
+
+[node name="PauseMenu" parent="." instance=ExtResource("10_pause")]
+unique_name_in_owner = true
+
+[node name="BuildPanel" parent="." instance=ExtResource("16_build")]
+unique_name_in_owner = true
+
+[node name="CRT" parent="." instance=ExtResource("19_crt")]
+
+[node name="Reticle" type="CanvasLayer" parent="."]
+script = ExtResource("20_reticle")
+
+[node name="OptionsMenu" type="CanvasLayer" parent="."]
+unique_name_in_owner = true
+script = ExtResource("21_options")

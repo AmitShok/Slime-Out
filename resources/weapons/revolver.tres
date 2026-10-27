@@ -1,0 +1,42 @@
+[gd_resource type="Resource" script_class="WeaponData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/weapon_data.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/Guns_V1.01 - Commission - Copy/02 - Sprite sheets/Revolver - Colt 45 [64x32]/[SHOOT WITH MUZZLE FLASH] Revolver - Colt 45.png" id="2_shoot"]
+[ext_resource type="Texture2D" path="res://assets/Guns_V1.01 - Commission - Copy/02 - Sprite sheets/Revolver - Colt 45 [64x32]/[RELOAD WITH BULLETS] Revolver - Colt 45.png" id="3_reload"]
+[ext_resource type="Texture2D" path="res://assets/Guns_V1.01 - Commission - Copy/01 - Individual sprites/Bullets & Ammo/Revolver - Colt 45/Bullet.png" id="4_projectile"]
+[ext_resource type="Texture2D" path="res://assets/Guns_V1.01 - Commission - Copy/01 - Individual sprites/Guns/Revolver - Colt 45 [64x32].png" id="5_icon"]
+
+[resource]
+script = ExtResource("1_script")
+reload_out_sound = &"reload_revolver_out"
+reload_in_sound = &"reload_revolver_in"
+fire_sound = &"shot_revolver"
+icon = ExtResource("5_icon")
+shoot_sheet = ExtResource("2_shoot")
+reload_sheet = ExtResource("3_reload")
+projectile_texture = ExtResource("4_projectile")
+id = &"revolver"
+display_name = "Colt 45 Revolver"
+description = "Slow, brutal shots that punch through the first slime."
+frame_size = Vector2i(64, 32)
+shoot_fps = 20.0
+reload_fps = 18.0
+grip = Vector2(8, 22)
+muzzle = Vector2(47, 12.5)
+support_grip = Vector2(11, 23)
+hold_distance = 4.0
+sprite_scale = 0.25
+projectile_scale = 1.0
+screen_shake = 0.16
+damage = 30.0
+fire_rate = 2.0
+magazine = 6
+reload_time = 1.7
+projectile_speed = 540.0
+projectile_count = 1
+pierce = 1
+spread_degrees = 1.5
+knockback = 160.0
+explosion_radius = 0.0
+max_range = 460.0
+min_round = 2

@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="UpgradeData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/upgrade_data.gd" id="1_script"]
+[ext_resource type="Script" path="res://scripts/data/stat_modifier.gd" id="2_mod"]
+[ext_resource type="Texture2D" path="res://assets/floor38/ui/upgrade_icons.png" id="3_icons"]
+
+[sub_resource type="AtlasTexture" id="icon"]
+atlas = ExtResource("3_icons")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="Resource" id="mod_1"]
+script = ExtResource("2_mod")
+stat = 0
+mode = 1
+value = 0.2
+
+[resource]
+script = ExtResource("1_script")
+id = &"hollow_points"
+title = "Hollow Points"
+description = "[color=#a7f070]+20%[/color] damage"
+icon = SubResource("icon")
+rarity = 0
+modifiers = Array[ExtResource("2_mod")]([SubResource("mod_1")])

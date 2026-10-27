@@ -1,0 +1,40 @@
+[gd_resource type="Resource" script_class="WeaponData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/weapon_data.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/Guns_V1.01 - Commission - Copy/02 - Sprite sheets/Glock - P80 [64x48]/[SHOOT WITH MUZZLE FLASH] Glock - P80.png" id="2_shoot"]
+[ext_resource type="Texture2D" path="res://assets/Guns_V1.01 - Commission - Copy/02 - Sprite sheets/Glock - P80 [64x48]/[RELOAD] Glock - P80.png" id="3_reload"]
+[ext_resource type="Texture2D" path="res://assets/Guns_V1.01 - Commission - Copy/01 - Individual sprites/Bullets & Ammo/Glock - P80/Bullet.png" id="4_projectile"]
+[ext_resource type="Texture2D" path="res://assets/Guns_V1.01 - Commission - Copy/01 - Individual sprites/Guns/Glock - P80 [64x48].png" id="5_icon"]
+
+[resource]
+script = ExtResource("1_script")
+fire_sound = &"shot_pistol"
+icon = ExtResource("5_icon")
+shoot_sheet = ExtResource("2_shoot")
+reload_sheet = ExtResource("3_reload")
+projectile_texture = ExtResource("4_projectile")
+id = &"glock"
+display_name = "Glock P80"
+description = "Reliable sidearm. Quick reloads, steady damage."
+frame_size = Vector2i(64, 48)
+shoot_fps = 24.0
+reload_fps = 20.0
+grip = Vector2(21, 20)
+muzzle = Vector2(48, 11)
+support_grip = Vector2(24, 22)
+hold_distance = 4.0
+sprite_scale = 0.25
+projectile_scale = 1.0
+screen_shake = 0.06
+damage = 10.0
+fire_rate = 4.0
+magazine = 12
+reload_time = 1.1
+projectile_speed = 430.0
+projectile_count = 1
+pierce = 0
+spread_degrees = 4.0
+knockback = 70.0
+explosion_radius = 0.0
+max_range = 380.0
+min_round = 1

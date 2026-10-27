@@ -1,0 +1,43 @@
+[gd_resource type="Resource" script_class="WeaponData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/weapon_data.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/Guns_V1.01 - Commission - Copy/02 - Sprite sheets/Thick Bazooka - M20 [192x32]/[SHOOT WITH MUZZLE FLASH] Thick Bazooka - M20.png" id="2_shoot"]
+[ext_resource type="Texture2D" path="res://assets/Guns_V1.01 - Commission - Copy/02 - Sprite sheets/Thick Bazooka - M20 [192x32]/[LOAD] Thick Bazooka - M20.png" id="3_reload"]
+[ext_resource type="Texture2D" path="res://assets/Guns_V1.01 - Commission - Copy/01 - Individual sprites/Bullets & Ammo/Thick Bazooka - M20/M20 Thick Rocket.png" id="4_projectile"]
+[ext_resource type="Texture2D" path="res://assets/Guns_V1.01 - Commission - Copy/01 - Individual sprites/Guns/Thick Bazooka - M20 [192x32].png" id="5_icon"]
+
+[resource]
+script = ExtResource("1_script")
+reload_out_sound = &""
+reload_in_sound = &"reload_rocket"
+fire_sound = &"shot_rocket"
+icon = ExtResource("5_icon")
+shoot_sheet = ExtResource("2_shoot")
+reload_sheet = ExtResource("3_reload")
+projectile_texture = ExtResource("4_projectile")
+id = &"heavy_bazooka"
+display_name = "M20 Heavy Launcher"
+description = "Massive warheads with a huge blast radius."
+frame_size = Vector2i(192, 32)
+shoot_fps = 14.0
+reload_fps = 10.0
+grip = Vector2(84, 20)
+muzzle = Vector2(147, 10.5)
+support_grip = Vector2(102, 16)
+hold_distance = 0.0
+mount_height = -3.0
+sprite_scale = 0.25
+projectile_scale = 0.5
+screen_shake = 0.16
+damage = 75.0
+fire_rate = 0.8
+magazine = 2
+reload_time = 2.8
+projectile_speed = 240.0
+projectile_count = 1
+pierce = 0
+spread_degrees = 2.0
+knockback = 300.0
+explosion_radius = 44.0
+max_range = 440.0
+min_round = 8

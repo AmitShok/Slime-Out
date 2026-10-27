@@ -1,0 +1,10 @@
+# Normalize line endings for text files (Godot writes LF).
+* text=auto eol=lf
+
+*.png binary
+*.wav binary
+*.ogg binary
+*.mp3 binary
+*.ico binary
+*.aseprite binary
+*.ttf binary

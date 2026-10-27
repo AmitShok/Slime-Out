@@ -1,0 +1,21 @@
+[gd_resource type="TileSet" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/mystic forest/sprites/tilesets/fences.png" id="1_xt0cd"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_6rsn7"]
+texture = ExtResource("1_xt0cd")
+1:0/0 = 0
+1:0/0/y_sort_origin = 6
+3:0/0 = 0
+3:0/0/y_sort_origin = 6
+1:2/0 = 0
+1:2/0/y_sort_origin = 6
+3:2/0 = 0
+3:2/0/y_sort_origin = 6
+2:3/0 = 0
+2:3/0/y_sort_origin = 6
+0:1/0 = 0
+0:1/0/y_sort_origin = 6
+
+[resource]
+sources/0 = SubResource("TileSetAtlasSource_6rsn7")

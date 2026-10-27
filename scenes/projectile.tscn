@@ -1,0 +1,19 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/projectile.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://scenes/explosion.tscn" id="2_explosion"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_hit"]
+radius = 2.5
+
+[node name="Projectile" type="Area2D"]
+collision_layer = 0
+collision_mask = 5
+monitorable = false
+script = ExtResource("1_script")
+explosion_scene = ExtResource("2_explosion")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_hit")

@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="EnemyData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/enemy_data.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/floor38/enemies/slime_brute.png" id="2_sheet"]
+
+[resource]
+script = ExtResource("1_script")
+sheet = ExtResource("2_sheet")
+id = &"slime_brute"
+display_name = "Brute Slime"
+sprite_scale = 2.0
+max_health = 140.0
+speed = 30.0
+contact_damage = 20.0
+knockback_resistance = 0.6
+radius = 6.0
+min_round = 4
+spawn_weight = 0.1
+weight_per_round = 0.025
+goo_color = Color(0.9373, 0.4902, 0.3412, 1)
+xp_value = 6.0

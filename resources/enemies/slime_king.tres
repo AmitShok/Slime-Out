@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="EnemyData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/enemy_data.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/floor38/enemies/slime_king.png" id="2_sheet"]
+
+[resource]
+script = ExtResource("1_script")
+sheet = ExtResource("2_sheet")
+id = &"slime_king"
+display_name = "Slime King"
+sprite_scale = 3.0
+max_health = 650.0
+speed = 34.0
+contact_damage = 30.0
+knockback_resistance = 0.9
+radius = 6.0
+is_boss = true
+min_round = 5
+spawn_weight = 0.0
+weight_per_round = 0.0
+goo_color = Color(0.7843, 0.5647, 0.9098, 1)
+xp_value = 60.0

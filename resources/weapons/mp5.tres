@@ -1,0 +1,40 @@
+[gd_resource type="Resource" script_class="WeaponData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/weapon_data.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/Guns_V1.01 - Commission - Copy/02 - Sprite sheets/Submachine - MP5A3 [80x48]/Full auto/[SHOOT WITH MUZZLE FLASH] FULL AUTO Submachine - MP5A3.png" id="2_shoot"]
+[ext_resource type="Texture2D" path="res://assets/Guns_V1.01 - Commission - Copy/02 - Sprite sheets/Submachine - MP5A3 [80x48]/[RELOAD] Submachine - MP5A3.png" id="3_reload"]
+[ext_resource type="Texture2D" path="res://assets/Guns_V1.01 - Commission - Copy/01 - Individual sprites/Bullets & Ammo/Submachine - MP5A3/Bullet.png" id="4_projectile"]
+[ext_resource type="Texture2D" path="res://assets/Guns_V1.01 - Commission - Copy/01 - Individual sprites/Guns/Submachine - MP5A3 [80x48].png" id="5_icon"]
+
+[resource]
+script = ExtResource("1_script")
+fire_sound = &"shot_smg"
+icon = ExtResource("5_icon")
+shoot_sheet = ExtResource("2_shoot")
+reload_sheet = ExtResource("3_reload")
+projectile_texture = ExtResource("4_projectile")
+id = &"mp5"
+display_name = "MP5A3 SMG"
+description = "Hose the horde. Huge fire rate, loose spread."
+frame_size = Vector2i(80, 48)
+shoot_fps = 30.0
+reload_fps = 20.0
+grip = Vector2(19, 18)
+muzzle = Vector2(60, 7.5)
+support_grip = Vector2(44, 12)
+hold_distance = 2.0
+sprite_scale = 0.25
+projectile_scale = 1.0
+screen_shake = 0.04
+damage = 7.0
+fire_rate = 11.0
+magazine = 30
+reload_time = 1.6
+projectile_speed = 470.0
+projectile_count = 1
+pierce = 0
+spread_degrees = 9.0
+knockback = 35.0
+explosion_radius = 0.0
+max_range = 360.0
+min_round = 2

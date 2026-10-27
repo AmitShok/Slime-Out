@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="EnemyData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/enemy_data.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/floor38/enemies/slime_charger.png" id="2_sheet"]
+
+[resource]
+script = ExtResource("1_script")
+sheet = ExtResource("2_sheet")
+id = &"slime_charger"
+display_name = "Charger Slime"
+behavior = 2
+sprite_scale = 1.0
+max_health = 45.0
+speed = 40.0
+contact_damage = 18.0
+knockback_resistance = 0.3
+radius = 6.0
+attack_range = 95.0
+attack_cooldown = 2.5
+windup_time = 0.65
+charge_speed = 270.0
+charge_duration = 0.45
+min_round = 7
+spawn_weight = 0.1
+weight_per_round = 0.025
+goo_color = Color(0.5451, 0.6078, 0.7059, 1)
+xp_value = 3.0

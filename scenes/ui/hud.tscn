@@ -1,0 +1,412 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/hud.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/floor38/ui/upgrade_icons.png" id="2_icons"]
+[ext_resource type="Texture2D" path="res://assets/bulletUI/1 - Agent_Mike_Bullet (16 x 16).png" id="3_bullet"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_heart"]
+atlas = ExtResource("2_icons")
+region = Rect2(144, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_skull"]
+atlas = ExtResource("2_icons")
+region = Rect2(112, 0, 16, 16)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_health"]
+bg_color = Color(0.694, 0.243, 0.325, 1)
+border_width_bottom = 4
+border_color = Color(0.365, 0.153, 0.365, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dash"]
+bg_color = Color(0.451, 0.937, 0.969, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_round"]
+bg_color = Color(1, 0.804, 0.459, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_boss"]
+bg_color = Color(0.651, 0.424, 0.812, 1)
+border_width_bottom = 4
+border_color = Color(0.365, 0.196, 0.565, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xp"]
+bg_color = Color(0.451, 0.937, 0.969, 1)
+border_width_top = 2
+border_width_bottom = 4
+border_color = Color(0.255, 0.651, 0.965, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xp_bg"]
+bg_color = Color(0.102, 0.11, 0.173, 0.88)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.161, 0.212, 0.435, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_weapon"]
+content_margin_left = 8.0
+content_margin_top = 5.0
+content_margin_right = 10.0
+content_margin_bottom = 5.0
+bg_color = Color(0.102, 0.11, 0.173, 0.75)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.337, 0.424, 0.525, 1)
+
+[node name="HUD" type="CanvasLayer"]
+script = ExtResource("1_script")
+
+[node name="Root" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="XPBar" type="ProgressBar" parent="Root"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 8.0
+offset_top = 6.0
+offset_right = -8.0
+offset_bottom = 28.0
+grow_horizontal = 2
+mouse_filter = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_xp_bg")
+theme_override_styles/fill = SubResource("StyleBoxFlat_xp")
+max_value = 1.0
+step = 0.0
+show_percentage = false
+
+[node name="XPShine" type="ColorRect" parent="Root/XPBar"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(1, 1, 1, 0)
+
+[node name="LevelLabel" type="Label" parent="Root/XPBar"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 10.0
+offset_top = -12.0
+offset_right = 110.0
+offset_bottom = 12.0
+grow_vertical = 2
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 15
+text = "LV 1"
+vertical_alignment = 1
+
+[node name="XPLabel" type="Label" parent="Root/XPBar"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -170.0
+offset_top = -12.0
+offset_right = -10.0
+offset_bottom = 12.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.851, 0.957, 0.973, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 13
+text = "0 / 6 XP"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="HealthRow" type="HBoxContainer" parent="Root"]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 40.0
+offset_right = 320.0
+offset_bottom = 80.0
+mouse_filter = 2
+theme_override_constants/separation = 10
+
+[node name="HeartIcon" type="TextureRect" parent="Root/HealthRow"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_vertical = 4
+texture = SubResource("AtlasTexture_heart")
+expand_mode = 1
+
+[node name="Bars" type="VBoxContainer" parent="Root/HealthRow"]
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+theme_override_constants/separation = 4
+
+[node name="HealthBar" type="ProgressBar" parent="Root/HealthRow/Bars"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(240, 24)
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/fill = SubResource("StyleBoxFlat_health")
+value = 100.0
+show_percentage = false
+
+[node name="HealthLabel" type="Label" parent="Root/HealthRow/Bars/HealthBar"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 15
+text = "100 / 100"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DashBar" type="ProgressBar" parent="Root/HealthRow/Bars"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(240, 8)
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/fill = SubResource("StyleBoxFlat_dash")
+max_value = 1.0
+step = 0.0
+value = 1.0
+show_percentage = false
+
+[node name="RoundInfo" type="VBoxContainer" parent="Root"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -170.0
+offset_top = 36.0
+offset_right = 170.0
+offset_bottom = 116.0
+grow_horizontal = 2
+mouse_filter = 2
+theme_override_constants/separation = 4
+
+[node name="RoundLabel" type="Label" parent="Root/RoundInfo"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 32
+text = "ROUND 1"
+horizontal_alignment = 1
+
+[node name="RoundProgress" type="ProgressBar" parent="Root/RoundInfo"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(320, 10)
+layout_mode = 2
+size_flags_horizontal = 4
+mouse_filter = 2
+theme_override_styles/fill = SubResource("StyleBoxFlat_round")
+max_value = 1.0
+step = 0.0
+show_percentage = false
+
+[node name="ProgressLabel" type="Label" parent="Root/RoundInfo"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.58, 0.69, 0.761, 1)
+theme_override_font_sizes/font_size = 15
+text = "Get ready..."
+horizontal_alignment = 1
+
+[node name="BossPanel" type="VBoxContainer" parent="Root"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -230.0
+offset_top = 128.0
+offset_right = 230.0
+offset_bottom = 178.0
+grow_horizontal = 2
+mouse_filter = 2
+theme_override_constants/separation = 2
+
+[node name="BossName" type="Label" parent="Root/BossPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.784, 0.565, 0.91, 1)
+theme_override_font_sizes/font_size = 18
+text = "SLIME KING"
+horizontal_alignment = 1
+
+[node name="BossBar" type="ProgressBar" parent="Root/BossPanel"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(460, 16)
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/fill = SubResource("StyleBoxFlat_boss")
+max_value = 1.0
+step = 0.0
+value = 1.0
+show_percentage = false
+
+[node name="Kills" type="HBoxContainer" parent="Root"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -160.0
+offset_top = 40.0
+offset_right = -20.0
+offset_bottom = 80.0
+grow_horizontal = 0
+mouse_filter = 2
+theme_override_constants/separation = 8
+alignment = 2
+
+[node name="SkullIcon" type="TextureRect" parent="Root/Kills"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_vertical = 4
+texture = SubResource("AtlasTexture_skull")
+expand_mode = 1
+
+[node name="KillsLabel" type="Label" parent="Root/Kills"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 28
+text = "0"
+
+[node name="WeaponPanel" type="PanelContainer" parent="Root"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -230.0
+offset_top = -70.0
+offset_right = -14.0
+offset_bottom = -14.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_weapon")
+
+[node name="HBox" type="HBoxContainer" parent="Root/WeaponPanel"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="IconBox" type="CenterContainer" parent="Root/WeaponPanel/HBox"]
+custom_minimum_size = Vector2(84, 36)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="WeaponIcon" type="TextureRect" parent="Root/WeaponPanel/HBox/IconBox"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Info" type="VBoxContainer" parent="Root/WeaponPanel/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_constants/separation = 2
+alignment = 1
+
+[node name="WeaponName" type="Label" parent="Root/WeaponPanel/HBox/Info"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.58, 0.69, 0.761, 1)
+theme_override_font_sizes/font_size = 11
+text = "Glock P80"
+
+[node name="AmmoRow" type="HBoxContainer" parent="Root/WeaponPanel/HBox/Info"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 6
+
+[node name="BulletIcon" type="TextureRect" parent="Root/WeaponPanel/HBox/Info/AmmoRow"]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("3_bullet")
+expand_mode = 1
+
+[node name="AmmoLabel" type="Label" parent="Root/WeaponPanel/HBox/Info/AmmoRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 18
+text = "12 / 12"
+
+[node name="ReloadBar" type="ProgressBar" parent="Root/WeaponPanel/HBox/Info"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(90, 4)
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/fill = SubResource("StyleBoxFlat_dash")
+max_value = 1.0
+step = 0.0
+show_percentage = false
+
+[node name="UpgradeRow" type="HFlowContainer" parent="Root"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = -60.0
+offset_right = 640.0
+offset_bottom = -20.0
+grow_vertical = 0
+mouse_filter = 2
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 6
+
+[node name="Banner" type="VBoxContainer" parent="Root"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -420.0
+offset_top = -140.0
+offset_right = 420.0
+offset_bottom = -30.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 0
+
+[node name="BannerTitle" type="Label" parent="Root/Banner"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.804, 0.459, 1)
+theme_override_constants/outline_size = 16
+theme_override_font_sizes/font_size = 68
+text = "ROUND 1"
+horizontal_alignment = 1
+
+[node name="BannerSubtitle" type="Label" parent="Root/Banner"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 22
+text = "Survive the horde"
+horizontal_alignment = 1

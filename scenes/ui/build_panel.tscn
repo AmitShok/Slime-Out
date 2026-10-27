@@ -1,0 +1,168 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/build_panel.gd" id="1_script"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_section"]
+content_margin_left = 12.0
+content_margin_top = 8.0
+content_margin_right = 12.0
+content_margin_bottom = 8.0
+bg_color = Color(0.2, 0.235, 0.341, 0.55)
+border_width_bottom = 3
+border_color = Color(0.102, 0.11, 0.173, 1)
+
+[node name="BuildPanel" type="CanvasLayer"]
+process_mode = 3
+layer = 8
+script = ExtResource("1_script")
+
+[node name="Root" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Dim" type="ColorRect" parent="Root"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.051, 0.055, 0.086, 0.85)
+
+[node name="Center" type="CenterContainer" parent="Root"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="Root/Center"]
+custom_minimum_size = Vector2(1080, 560)
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="Root/Center/Panel"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Header" type="HBoxContainer" parent="Root/Center/Panel/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Title" type="Label" parent="Root/Center/Panel/VBox/Header"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.804, 0.459, 1)
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 34
+text = "YOUR BUILD"
+
+[node name="LevelLabel" type="Label" parent="Root/Center/Panel/VBox/Header"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 8
+theme_override_colors/font_color = Color(0.451, 0.937, 0.969, 1)
+theme_override_font_sizes/font_size = 17
+text = "LV 1"
+
+[node name="Hint" type="Label" parent="Root/Center/Panel/VBox/Header"]
+layout_mode = 2
+size_flags_vertical = 8
+theme_override_colors/font_color = Color(0.58, 0.69, 0.761, 1)
+theme_override_font_sizes/font_size = 14
+text = "[Tab] or [Esc] to close"
+
+[node name="Body" type="HBoxContainer" parent="Root/Center/Panel/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 14
+
+[node name="Weapon" type="PanelContainer" parent="Root/Center/Panel/VBox/Body"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_section")
+
+[node name="VBox" type="VBoxContainer" parent="Root/Center/Panel/VBox/Body/Weapon"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Header" type="Label" parent="Root/Center/Panel/VBox/Body/Weapon/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.804, 0.459, 1)
+theme_override_font_sizes/font_size = 16
+text = "WEAPON"
+
+[node name="IconBox" type="CenterContainer" parent="Root/Center/Panel/VBox/Body/Weapon/VBox"]
+custom_minimum_size = Vector2(0, 76)
+layout_mode = 2
+
+[node name="WeaponIcon" type="TextureRect" parent="Root/Center/Panel/VBox/Body/Weapon/VBox/IconBox"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="WeaponName" type="Label" parent="Root/Center/Panel/VBox/Body/Weapon/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Glock P80"
+horizontal_alignment = 1
+
+[node name="WeaponGrid" type="GridContainer" parent="Root/Center/Panel/VBox/Body/Weapon/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 1
+columns = 3
+
+[node name="Survivor" type="PanelContainer" parent="Root/Center/Panel/VBox/Body"]
+custom_minimum_size = Vector2(290, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_section")
+
+[node name="VBox" type="VBoxContainer" parent="Root/Center/Panel/VBox/Body/Survivor"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Header" type="Label" parent="Root/Center/Panel/VBox/Body/Survivor/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.804, 0.459, 1)
+theme_override_font_sizes/font_size = 16
+text = "SURVIVOR"
+
+[node name="SurvivorGrid" type="GridContainer" parent="Root/Center/Panel/VBox/Body/Survivor/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 1
+columns = 3
+
+[node name="Upgrades" type="PanelContainer" parent="Root/Center/Panel/VBox/Body"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_section")
+
+[node name="VBox" type="VBoxContainer" parent="Root/Center/Panel/VBox/Body/Upgrades"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="UpgradeHeader" type="Label" parent="Root/Center/Panel/VBox/Body/Upgrades/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.804, 0.459, 1)
+theme_override_font_sizes/font_size = 16
+text = "UPGRADES"
+
+[node name="Scroll" type="ScrollContainer" parent="Root/Center/Panel/VBox/Body/Upgrades/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="UpgradeList" type="VBoxContainer" parent="Root/Center/Panel/VBox/Body/Upgrades/VBox/Scroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10

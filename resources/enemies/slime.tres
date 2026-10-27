@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="EnemyData" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/enemy_data.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/mystic forest/sprites/characters/slime.png" id="2_sheet"]
+
+[resource]
+script = ExtResource("1_script")
+sheet = ExtResource("2_sheet")
+id = &"slime"
+display_name = "Slime"
+sprite_scale = 1.0
+max_health = 30.0
+speed = 42.0
+contact_damage = 10.0
+knockback_resistance = 0.0
+radius = 6.0
+min_round = 1
+spawn_weight = 1.0
+weight_per_round = 0.0
+goo_color = Color(0.3961, 0.6941, 0.7216, 1)
+xp_value = 1.0
