@@ -142,7 +142,7 @@ func _build_ui() -> void:
 	_stage.add_child(_rig)
 	_body.position = Vector2(0, -14)
 	_rig.add_child(_body)
-	_gun_pivot.position = Vector2(0, -10)
+	_gun_pivot.position = Vector2(0, -12)
 	_rig.add_child(_gun_pivot)
 	_gun_pivot.add_child(_gun)
 	_gun_pivot.add_child(_hand)

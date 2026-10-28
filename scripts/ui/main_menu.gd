@@ -91,7 +91,7 @@ func _build_hero() -> void:
 	_hero_sprite.position = Vector2(0, -14)
 	_hero_sprite.play(&"idle_side")
 	_hero.add_child(_hero_sprite)
-	_gun_pivot.position = Vector2(0, -10)
+	_gun_pivot.position = Vector2(0, -12)
 	_hero.add_child(_gun_pivot)
 	_gun.texture = GUN
 	_gun.scale = Vector2.ONE * GUN_SCALE

@@ -30,8 +30,8 @@ script = ExtResource("4_stats")
 starting_weapon = ExtResource("5_glock")
 
 [node name="Weapon" parent="." instance=ExtResource("3_weapon")]
-position = Vector2(0, -10)
+position = Vector2(0, -12)
 
 [node name="AutoWeapons" type="Node2D" parent="."]
-position = Vector2(0, -10)
+position = Vector2(0, -12)
 script = ExtResource("6_auto")

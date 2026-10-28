@@ -376,22 +376,107 @@ local function stamp(buf, grid, ox, oy, min_y)
   end
 end
 
-local LEG_Y = FEET_Y - 6       -- leg area top (hips row)
+local LEG_Y = FEET_Y - 8       -- hip joints (legs are 8 px: room for real knees)
 local TORSO_Y = LEG_Y - 8
 local HEAD_Y = TORSO_Y - 12
 
-local function front_legs(buf, lift_l, lift_r)
-  stamp(buf, LEG_FRONT_L, 10, LEG_Y + 1 - lift_l, LEG_Y + 1)
-  stamp(buf, LEG_FRONT_R, 16, LEG_Y + 1 - lift_r, LEG_Y + 1)
-  stamp(buf, HIPS_FRONT, 10, LEG_Y)
+-- Jointed legs ---------------------------------------------------------------
+-- Each leg is a thigh + shin solved with 2-bone IK from a hip joint (which
+-- moves with the torso bob / lean, so legs never detach) to an ankle on a
+-- foot path, then rasterised as an outlined, shaded limb with a boot.
+-- Current hip offset, set by compose() before it draws the legs.
+local LEG_TB, LEG_LEAN = 0, 0
+local THIGH, SHIN = 3.5, 3.5
+local ANKLE_Y = FEET_Y - 2      -- boots are 3 rows: ankle, foot, sole
+
+local function seg_dist(px_, py_, ax, ay, bx, by)
+  local vx, vy = bx - ax, by - ay
+  local len2 = vx * vx + vy * vy
+  local t = 0
+  if len2 > 0 then t = math.max(0, math.min(1, ((px_ - ax) * vx + (py_ - ay) * vy) / len2)) end
+  local cx, cy = ax + vx * t, ay + vy * t
+  return math.sqrt((px_ - cx) ^ 2 + (py_ - cy) ^ 2)
 end
 
-local function side_legs(buf, near_dx, near_lift, far_dx, far_lift)
-  stamp(buf, LEG_SIDE_FAR, 13 + far_dx, LEG_Y - far_lift, LEG_Y)
-  stamp(buf, LEG_SIDE, 13 + near_dx, LEG_Y - near_lift, LEG_Y)
-  stamp(buf, HIPS_SIDE, 10, LEG_Y)
+local function paint(buf, ax, ay, bx, by, r, ch)
+  for y = math.floor(math.min(ay, by) - r - 1), math.ceil(math.max(ay, by) + r + 1) do
+    for x = math.floor(math.min(ax, bx) - r - 1), math.ceil(math.max(ax, bx) + r + 1) do
+      if y >= 0 and y < SIZE and x >= 0 and x < SIZE and seg_dist(x + 0.5, y + 0.5, ax, ay, bx, by) <= r then
+        buf[y][x] = ch
+      end
+    end
+  end
 end
 
+-- Knee from hip H and ankle A; `forward` picks which way the knee bends.
+local function solve_knee(hx, hy, ax, ay, forward)
+  local dx, dy = ax - hx, ay - hy
+  local d = math.sqrt(dx * dx + dy * dy)
+  d = math.max(0.01, math.min(d, THIGH + SHIN - 0.01))
+  local a = (THIGH * THIGH - SHIN * SHIN + d * d) / (2 * d)
+  local h = math.sqrt(math.max(0, THIGH * THIGH - a * a))
+  local mx, my = hx + a * dx / d, hy + a * dy / d
+  local nx, ny = -dy / d, dx / d
+  local k1x, k1y = mx + nx * h, my + ny * h
+  local k2x, k2y = mx - nx * h, my - ny * h
+  if (k1x - k2x) * forward > 0 then return k1x, k1y end
+  return k2x, k2y
+end
+
+-- Draws one limb hip -> knee -> ankle. far = darker (depth).
+local function limb(buf, hx, hy, kx, ky, ax, ay, far)
+  local fill, light = far and "n" or "p", far and "p" or "P"
+  paint(buf, hx, hy, kx, ky, 1.95, "N")
+  paint(buf, kx, ky, ax, ay, 1.95, "N")
+  paint(buf, hx, hy, kx, ky, 1.15, fill)
+  paint(buf, kx, ky, ax, ay, 1.15, fill)
+  -- Light catches the front/top edge of the trousers.
+  paint(buf, hx - 0.6, hy, kx - 0.6, ky, 0.45, light)
+  paint(buf, kx - 0.6, ky, ax - 0.6, ay, 0.45, light)
+end
+
+local BOOT_SIDE = { "kKk..", "xKKKk", "xxxxx" }
+local BOOT_SIDE_LIFT = { "kKk.", "xKKk", ".xxx" }
+local BOOT_FRONT = { "kKKk", "xKkx", "xxxx" }
+local BOOT_FRONT_LIFT = { "kKKk", "xxxx" }
+local function darker_boot(grid)
+  local out = {}
+  for i, row in ipairs(grid) do out[i] = row:gsub("K", "k") end
+  return out
+end
+
+-- Side view (facing right). dx = ankle offset from the body centre, lift =
+-- how far the foot is off the ground.
+local function side_leg(buf, dx, lift, far)
+  local hx, hy = 15.5 + LEG_LEAN, LEG_Y + LEG_TB + 0.5
+  local ax, ay = 15.5 + dx, ANKLE_Y + 0.5 - lift
+  local kx, ky = solve_knee(hx, hy, ax, ay, 1)
+  limb(buf, hx, hy, kx, ky, ax, ay, far)
+  local boot = lift > 0.6 and BOOT_SIDE_LIFT or BOOT_SIDE
+  if far then boot = darker_boot(boot) end
+  stamp(buf, boot, math.floor(ax) - 1, math.floor(ay))
+end
+
+function side_legs(buf, near_dx, near_lift, far_dx, far_lift)
+  side_leg(buf, far_dx, far_lift, true)
+  side_leg(buf, near_dx, near_lift, false)
+end
+
+-- Front / back view: legs below the hips; a lifted foot foreshortens the
+-- leg (knee coming toward the camera) and shows the sole.
+local function front_leg(buf, hip_x, lift)
+  local hx, hy = hip_x, LEG_Y + LEG_TB + 0.5
+  local ax, ay = hip_x + (hip_x < 16 and -0.3 or 0.3), ANKLE_Y + 0.5 - lift
+  local kx, ky = (hx + ax) * 0.5 + (hip_x < 16 and -0.6 or 0.6) * math.min(lift, 2) * 0.5, (hy + ay) * 0.5
+  limb(buf, hx, hy, kx, ky, ax, ay, false)
+  if lift > 0.6 then paint(buf, kx, ky, kx, ky, 0.7, "P") end   -- knee catches light
+  stamp(buf, lift > 0.6 and BOOT_FRONT_LIFT or BOOT_FRONT, math.floor(ax) - 1, math.floor(ay))
+end
+
+function front_legs(buf, lift_l, lift_r)
+  front_leg(buf, 13.5, lift_l)
+  front_leg(buf, 18.5, lift_r)
+end
 local function upper(buf, dir, bob, head)
   stamp(buf, head or HEAD[dir], 9, HEAD_Y + bob)
   stamp(buf, TORSO[dir], 10, TORSO_Y + bob)
@@ -461,12 +546,29 @@ local RUN_PLUME = { 0, 0, 1, 0, 0, 0, -1, 0 }
 local RUN_LEAN = 1
 -- Side: near leg plants forward on frame 1 and sweeps back; it lifts while
 -- swinging forward again. The far leg is half a cycle behind.
-local SIDE_NEAR_DX   = { 3, 2, 0, -2, -3, -2, 0, 2 }
-local SIDE_NEAR_LIFT = { 0, 0, 0, 0, 0, 1, 2, 1 }
-local SIDE_FAR_DX    = { -3, -2, 0, 2, 3, 2, 0, -2 }
-local SIDE_FAR_LIFT  = { 0, 1, 2, 1, 0, 0, 0, 0 }
-local FRONT_LIFT_L = { 0, 1, 2, 1, 0, 0, 0, 0 }
-local FRONT_LIFT_R = { 0, 0, 0, 0, 0, 1, 2, 1 }
+-- Foot path over a stride (phase 0..1): stance sweeps the planted foot back
+-- along the ground, swing lifts it on an arc and brings it forward (eased).
+local STRIDE, LIFT = 3.0, 2.6
+local function foot(phase)
+  phase = phase % 1
+  if phase < 0.5 then
+    local u = phase / 0.5
+    return STRIDE - 2 * STRIDE * u, 0
+  end
+  local u = (phase - 0.5) / 0.5
+  local eased = u * u * (3 - 2 * u)
+  return -STRIDE + 2 * STRIDE * eased, math.sin(math.pi * u) * LIFT
+end
+local SIDE_NEAR_DX, SIDE_NEAR_LIFT, SIDE_FAR_DX, SIDE_FAR_LIFT = {}, {}, {}, {}
+local FRONT_LIFT_L, FRONT_LIFT_R = {}, {}
+for i = 1, 8 do
+  local p = (i - 1) / 8
+  SIDE_NEAR_DX[i], SIDE_NEAR_LIFT[i] = foot(p)
+  SIDE_FAR_DX[i], SIDE_FAR_LIFT[i] = foot(p + 0.5)
+  local _, l = foot(p + 0.5)
+  local _, r = foot(p)
+  FRONT_LIFT_L[i], FRONT_LIFT_R[i] = l, r
+end
 
 local DASH_TORSO = { 1, 1, 1, 1 }
 local DASH_HEAD  = { 1, 1, 2, 1 }
@@ -501,9 +603,10 @@ HEAD_BLINK = { down = shut(HEAD.down, 9), side = shut(HEAD.side, 8), up = HEAD.u
 -- One frame: legs, then (behind the body) side tail, head, torso, back tail.
 local function compose(dir, legs_fn, o)
   local buf = blank()
-  legs_fn(buf)
   local lean = (dir == "side") and (o.lean or 0) or 0
   local tb, hb = o.tb or 0, o.hb or 0
+  LEG_TB, LEG_LEAN = tb, lean
+  legs_fn(buf)
   local tail = def.tail and o.tail and def.tail[dir]
   if tail and dir == "side" then
     stamp(buf, tail.frames[o.tail], 10 + lean + tail.x, TORSO_Y + tb + tail.y)
@@ -521,7 +624,7 @@ local function compose(dir, legs_fn, o)
 end
 
 local function legs_idle(dir)
-  if dir == "side" then return function(b) side_legs(b, 0, 0, 1, 0) end end
+  if dir == "side" then return function(b) side_legs(b, 1, 0, -1.5, 0) end end
   return function(b) front_legs(b, 0, 0) end
 end
 
@@ -559,10 +662,11 @@ end
 local hit = compose("down", legs_idle("down"), { tb = 0, hb = -1, head = HEAD_BLINK.down, tail = 2 })
 local stagger = compose("down", function(b) front_legs(b, 0, 1) end, { tb = 2, hb = 2, head = HEAD_BLINK.down, tail = 1 })
 local crumple = blank()
-front_legs(crumple, 2, 2)
+LEG_TB, LEG_LEAN = 4, 0
+front_legs(crumple, 2.5, 2.5)
 stamp(crumple, HEAD_BLINK.down, 9, HEAD_Y + 4)
 stamp(crumple, TORSO.down, 10, TORSO_Y + 4)
-local fallen = lying(compose("side", function(b) side_legs(b, 0, 0, 1, 0) end, { head = HEAD_BLINK.side }))
+local fallen = lying(compose("side", function(b) side_legs(b, 1, 0, -1.5, 0) end, { head = HEAD_BLINK.side }))
 local bounced = blank()
 for y = 1, SIZE - 1 do for x = 0, SIZE - 1 do bounced[y - 1][x] = fallen[y][x] end end
 rows[#rows + 1] = { hit, stagger, crumple, fallen, bounced, fallen }
@@ -574,7 +678,8 @@ for _, dir in ipairs({ "down", "side", "up" }) do
     local legs
     if dir == "side" then
       local near_lift = (i == 3) and 3 or 2
-      legs = function(b) side_legs(b, 3, near_lift, -2, 1) end
+      local reach = (i == 3) and 4.5 or 4
+      legs = function(b) side_legs(b, reach, 1.5, -reach, near_lift) end
     else
       local l, r = (i % 2 == 1) and 2 or 1, (i % 2 == 1) and 1 or 2
       legs = function(b) front_legs(b, l, r) end
